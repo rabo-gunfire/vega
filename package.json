@@ -1,6 +1,6 @@
 {
   "name": "saas-conn-docusign-esignature",
-  "description": "SaaS Connectivity 2.0 platform based connector for DocuSign eSigunature application.",
+  "description": "SaaS Connectivity 2.0 platform based connector for DocuSign eSignature application.",
   "version": "0.1.0",
   "author": "SailPoint Technologies, Inc.",
   "license": "Copyright (c) 2021. SailPoint Technologies, Inc. All rights reserved.",
@@ -20,11 +20,11 @@
     "test": "npx jest",
     "start": "node ./dist/index.js",
     "prepack-zip": "npm ci && npm run build",
-    "pack-zip": "cp -R ./node_modules ./dist && (cd ./dist && zip -r $npm_package_nname-$npm_package_version.zip ./)",
+    "pack-zip": "cp -R ./node_modules ./dist/ && (cd ./dist && zip -q -r $npm_package_name-$npm_package_version.zip ./)",
     "prebuild:ncc": "npm run clean",
     "build:ncc": "npx ncc build ./src/index.ts -o ./dist -m -s -C",
     "prepack-zip:ncc": "npm ci && npm run build:ncc",
-    "pack-zip:ncc": "(cd ./dist && zip $npm_package_name-$npm_package_version.zip ./index.js)"
+    "pack-zip:ncc": "(cd ./dist && zip $npm_package_name-$npm_package_version.zip ./index.js ./index.js.map ./sourcemap-register.js)"
   },
   "dependencies": {
     "@sailpoint/connector-sdk": "git+ssh://git@github.com/sailpoint/saas-connector-sdk-js.git#main",
