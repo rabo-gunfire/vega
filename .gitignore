@@ -19,3 +19,6 @@ dist/
 
 # Dependency directories
 node_modules/
+
+# Developer modules
+config.json
