@@ -3,6 +3,7 @@
 .github
 .vscode
 *.json
+jest.config.ts
 dist
 node_modules
 test
