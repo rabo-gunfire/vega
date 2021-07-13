@@ -18,7 +18,7 @@
     "prebuild": "npm run clean",
     "build": "npx tsc",
     "test": "npx jest",
-    "prettier": "npx prettier --write .",
+    "prettier": "npx prettier --config .prettierrc.json --write .",
     "start": "node ./dist/index.js",
     "prepack-zip": "npm ci && npm run build",
     "pack-zip": "cp -R ./node_modules ./dist/ && (cd ./dist && zip -q -r $npm_package_name-$npm_package_version.zip ./)",
@@ -29,13 +29,13 @@
   },
   "dependencies": {
     "@sailpoint/connector-sdk": "git+ssh://git@github.com/sailpoint/saas-connector-sdk-js.git#main",
-    "@types/docusign-esign": "^5.5.0",
-    "@types/superagent": "^4.1.11",
     "docusign-esign": "^5.10.0"
   },
   "devDependencies": {
+    "@types/docusign-esign": "^5.5.0",
     "@types/jest": "^26.0.23",
     "@types/node": "^15.14.2",
+    "@types/superagent": "^4.1.11",
     "@vercel/ncc": "^0.28.6",
     "jest": "^27.0.4",
     "prettier": "^2.3.2",
