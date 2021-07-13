@@ -1,0 +1,44 @@
+{
+  "name": "saas-conn-docusign-esignature",
+  "description": "SaaS Connectivity 2.0 platform based connector for DocuSign eSigunature application.",
+  "version": "0.1.0",
+  "author": "SailPoint Technologies, Inc.",
+  "license": "Copyright (c) 2021. SailPoint Technologies, Inc. All rights reserved.",
+  "main": "./dist/index.js",
+  "private": true,
+  "keywords": [
+    "sailpoint",
+    "connector"
+  ],
+  "engines": {
+    "node": ">=16.2.0"
+  },
+  "scripts": {
+    "clean": "npx shx rm -rf ./dist ./coverage",
+    "prebuild": "npm run clean",
+    "build": "npx tsc",
+    "test": "npx jest",
+    "start": "node ./dist/index.js",
+    "prepack-zip": "npm ci && npm run build",
+    "pack-zip": "cp -R ./node_modules ./dist && (cd ./dist && zip -r $npm_package_nname-$npm_package_version.zip ./)",
+    "prebuild:ncc": "npm run clean",
+    "build:ncc": "npx ncc build ./src/index.ts -o ./dist -m -s -C",
+    "prepack-zip:ncc": "npm ci && npm run build:ncc",
+    "pack-zip:ncc": "(cd ./dist && zip $npm_package_name-$npm_package_version.zip ./index.js)"
+  },
+  "dependencies": {
+    "@sailpoint/connector-sdk": "git+ssh://git@github.com/sailpoint/saas-connector-sdk-js.git#main",
+    "@types/docusign-esign": "^5.5.0",
+    "@types/superagent": "^4.1.11",
+    "docusign-esign": "^5.10.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.23",
+    "@types/node": "^15.14.2",
+    "@vercel/ncc": "^0.28.6",
+    "jest": "^27.0.4",
+    "shx": "^0.3.3",
+    "ts-jest": "^27.0.3",
+    "typescript": "^4.3.5"
+  }
+}

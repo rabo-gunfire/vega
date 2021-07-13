@@ -1,0 +1,8 @@
+{ 
+    "apiUrl": "https://demo.docusign.net",
+    "oauthServerUrl": "https://account-d.docusign.com",
+    "accountId": "14072015",
+    "clientId": "df45eb70-ba0f-4106-9e0f-ce83fdb4d4a9",
+    "clientSecret": "403ab462-76b8-4037-af7b-094eec3bd338",
+    "refreshToken": "eyJ0eXAiOiJNVCIsImFsZyI6IlJTMjU2Iiwia2lkIjoiNjgxODVmZjEtNGU1MS00Y2U5LWFmMWMtNjg5ODEyMjAzMzE3In0.AQoAAAABAAgABwCA5oP4OzbZSAgAgGbo8M5N2UgCAGPeujRj2BJNpA1azVoR_tAVAAEAAAAYAAEAAAAFAAAADQAkAAAAZGY0NWViNzAtYmEwZi00MTA2LTllMGYtY2U4M2ZkYjRkNGE5IgAkAAAAZGY0NWViNzAtYmEwZi00MTA2LTllMGYtY2U4M2ZkYjRkNGE5MAAAFhgbsizZSDcAJrckfLbkskWwVEu_I6YOXQ.BIvZBgvAXLdM7dhbSCZxUMgQKBP5n60m7z39HPb0pWPTry5cUaPQr5yMzQdBzkebFhuCcLmGHJl-5S-kz8vpmwsE_1JCPOxU-j2TDWYtsoqnmSYKhA_t2CXGWOr84ac1_ZpgWtL5QVzUfK8ypW-NB8yVkAS3y3whQ22hk9noe-i6OhF1pPYV20p37ezK-_K5ITLBA4CH8TJR4XvXWTbzJvRXwaJPbaW70mQf2df_Yk_7iFhy3gbfq-w-jwk9wV4c3qOi1semgflQR8vARyaE_NGT7FJJA0oow_kAQbXheR39ALoQEPfFdGwkwK9wXg326Fc1kUrZlKtOqQOvfSU2pw"
+}
