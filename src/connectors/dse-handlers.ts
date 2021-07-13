@@ -135,7 +135,7 @@ export const stdEntitlementReadHandler: StdEntitlementReadHandler = async (
     res: Response<StdEntitlementReadOutput>): Promise<void> => {
 
     let error = new ConnectorError('Operation not supported.')
-    console.log(error);
+    console.error(error);
     throw error;
 }
 
