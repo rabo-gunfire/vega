@@ -1,7 +1,6 @@
 /* Copyright (C) 2021 SailPoint Technologies, Inc.  All rights reserved. */
 
 import {
-    ApiClient,
     GroupsApi,
     NewUsersSummary,
     UserInformation,

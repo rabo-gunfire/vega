@@ -1,6 +1,6 @@
 /* Copyright (C) 2021 SailPoint Technologies, Inc.  All rights reserved. */
 
-import { Group, GroupInformation, NewUsersSummary, UserInformation, UserInformationList, UsersResponse } from 'docusign-esign';
+import { Group, GroupInformation, UserInformation, UserInformationList } from 'docusign-esign';
 import { ResponseError } from 'superagent';
 
 import {
@@ -17,8 +17,6 @@ import {
     StdAccountUpdateInput,
     StdAccountUpdateOutput,
     StdEntitlementListOutput,
-    StdEntitlementReadInput,
-    StdEntitlementReadOutput,
     StdTestConnectionOutput
 } from '@sailpoint/connector-sdk';
 
@@ -43,7 +41,7 @@ export class DseConnector {
      * @param {Context} context - Source configuration context
      */
     constructor(context: Context) {
-        let config: any = context.config;
+        const config: any = context.config;
 
         this.validateConfiguration(config);
 
@@ -69,7 +67,7 @@ export class DseConnector {
         // Decode an access token and find a subject
         let result;
         try {
-            result = await this.docuSign.dsClient.getTokenUserInfo()
+            result = await this.docuSign.dsClient.getTokenUserInfo();
         } catch (error) {
             this.convertToConnectorError(error);
         }
@@ -108,7 +106,7 @@ export class DseConnector {
         res: Response<StdAccountReadOutput>): Promise<void> {
 
         if (!input.identity) {
-            throw new InvalidRequestError('Native identifier cannot be empty.')
+            throw new InvalidRequestError('Native identifier cannot be empty.');
         }
 
         // Always refesh a token before interacting with DocuSign eSgintaure app
@@ -134,7 +132,7 @@ export class DseConnector {
             // Always refesh a token before interacting with DocuSign eSgintaure app
             await this.docuSign.dsClient.refreshAccessToekn();
 
-            let opts = {
+            const opts = {
                 // When set to true, users membership insformation is returned.
                 additionalInfo: true,
 
@@ -143,12 +141,12 @@ export class DseConnector {
 
                 // The number of records to return or paginated limit.
                 // Limit must be > 0 and <= 100
-                count: 100,
-            }
+                count: 100
+            };
 
             let result;
             try {
-                result = await this.docuSign.listUsers(this.accountId, opts)
+                result = await this.docuSign.listUsers(this.accountId, opts);
             } catch (error) {
                 this.convertToConnectorError(error);
             }
@@ -196,7 +194,7 @@ export class DseConnector {
                         lastLogin: user.lastLogin,
                         groups: user.groupList?.map((group: Group) => group?.groupId)
                     }
-                } as StdAccountListOutput)
+                } as StdAccountListOutput);
             });
         } // loop end
     }
@@ -217,18 +215,18 @@ export class DseConnector {
             // Always refesh a token before interacting with DocuSign eSgintaure app
             await this.docuSign.dsClient.refreshAccessToekn();
 
-            let opts = {
+            const opts = {
                 // The position within the total result set from which to start returning values.
                 startPosition: offset,
 
                 // The number of records to return or paginated limit.
                 // Limit must be > 0 and <= 100
-                count: 100,
-            }
+                count: 100
+            };
 
             let result;
             try {
-                result = await this.docuSign.listEntitlements(this.accountId, opts)
+                result = await this.docuSign.listEntitlements(this.accountId, opts);
             } catch (error) {
                 this.convertToConnectorError(error);
             }
@@ -263,7 +261,7 @@ export class DseConnector {
                         permissionProfileId: group.permissionProfileId,
                         usersCount: group.usersCount
                     }
-                } as StdEntitlementListOutput)
+                } as StdEntitlementListOutput);
             });
         } // loop end
     }
@@ -278,7 +276,7 @@ export class DseConnector {
         res: Response<StdAccountUpdateOutput>): Promise<void> {
 
         if (!plan.identity) {
-            throw new InvalidRequestError('Native identifier cannot be empty.')
+            throw new InvalidRequestError('Native identifier cannot be empty.');
         }
 
         // Always refesh a token before interacting with DocuSign eSgintaure app
@@ -387,12 +385,12 @@ export class DseConnector {
     async crateAccount(input: StdAccountCreateInput,
         res: Response<StdAccountCreateOutput>): Promise<void> {
             if (!input.identity) {
-                throw new InvalidRequestError('Username cannot be empty.')
+                throw new InvalidRequestError('Username cannot be empty.');
             }
             
             // Form the JSON payload
             let userAttrs: any= {};
-            for (let key in input.attributes) {
+            for (const key in input.attributes) {
                 userAttrs[key] = input.attributes[key];
             }
             userAttrs['userName'] = input.identity;
@@ -438,7 +436,7 @@ export class DseConnector {
         res: Response<StdAccountDeleteOutput>): Promise<void> {
 
         if (!input.identity) {
-            throw new InvalidRequestError('Native identifier cannot be empty.')
+            throw new InvalidRequestError('Native identifier cannot be empty.');
         }
 
         // Always refesh a token before interacting with DocuSign eSgintaure app
@@ -521,17 +519,17 @@ export class DseConnector {
      */
     private validateConfiguration(config: any): void {
         if (!config?.apiUrl) {
-            throw new InvalidConfigurationError(`'apiUrl' is required`)
+            throw new InvalidConfigurationError(`'apiUrl' is required`);
         } else if (!config?.oauthServerUrl) {
-            throw new InvalidConfigurationError(`'oauthServerUrl' is required`)
+            throw new InvalidConfigurationError(`'oauthServerUrl' is required`);
         } else if (!config?.accountId) {
-            throw new InvalidConfigurationError(`'accountId' is required`)
+            throw new InvalidConfigurationError(`'accountId' is required`);
         } else if (!config?.clientId) {
-            throw new InvalidConfigurationError(`'clientId' is required`)
+            throw new InvalidConfigurationError(`'clientId' is required`);
         } else if (!config?.clientSecret) {
-            throw new InvalidConfigurationError(`'clientSecret' is required`)
+            throw new InvalidConfigurationError(`'clientSecret' is required`);
         } else if (!config?.refreshToken) {
-            throw new InvalidConfigurationError(`'refreshToken' is required`)
+            throw new InvalidConfigurationError(`'refreshToken' is required`);
         }
     }
 
@@ -542,7 +540,7 @@ export class DseConnector {
      */
     private convertToConnectorError(err: Error | any): void {
         if (err instanceof Error) { // http errors
-            let e = err as ResponseError;
+            const e = err as ResponseError;
             if (e.status) {
                 if (e.status == 400) {
                     throw new InvalidRequestError(`${e.status} ${e.message}`, e);

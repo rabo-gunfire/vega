@@ -1,6 +1,6 @@
 /* Copyright (C) 2021 SailPoint Technologies, Inc.  All rights reserved. */
 
-import docusign, { ApiClient } from "docusign-esign";
+import { ApiClient } from "docusign-esign";
 import superagent, { Response, ResponseError } from "superagent";
 import { ConnectorError } from "../connectors/ConnectorError";
 import { InvalidResponseError } from "../connectors/InvalidResponseError";
@@ -71,7 +71,7 @@ async refreshAccessToekn(): Promise<void> {
     }
 
     private async generateToken(): Promise<string> {
-        let clientString: string = this.clientId + ':' + this.clientSecret;
+        const clientString: string = this.clientId + ':' + this.clientSecret;
         const request = superagent.post('https://' + this._dsApiClient.getOAuthBasePath() + '/oauth/token')
             .type('form')
             .accept('application/json')
@@ -84,7 +84,7 @@ async refreshAccessToekn(): Promise<void> {
                 if (err) {
                     reject(err);
                 } else {
-                    resolve(res.body.access_token)
+                    resolve(res.body.access_token);
                 }
             });
         });
