@@ -29,23 +29,23 @@ const context: Context = {
     version: 1.0
 }
 
-// // test connection
-// describe("test connection", () => {
-//     afterAll(async () => {
-//         await new Promise<void>(resolve => setTimeout(() => resolve(), 10000)); // avoid jest open handle error
-//     });
+// test connection
+describe("test connection", () => {
+    afterAll(async () => {
+        await new Promise<void>(resolve => setTimeout(() => resolve(), 10000)); // avoid jest open handle error
+    });
 
-//     // jest.setup.js
-//     jest.setTimeout(30000);
+    // jest.setup.js
+    jest.setTimeout(30000);
 
-//     test("0", async () => {
-//         await connector._exec(StandardCommand.StdTestConnection,
-//             context,
-// 			undefined,
-// 			new PassThrough({ objectMode: true }).on('data', (chunk) => expect(chunk).toStrictEqual({}))
-// 		)
-//     })   
-// });
+    test("0", async () => {
+        await connector._exec(StandardCommand.StdTestConnection,
+            context,
+			undefined,
+			new PassThrough({ objectMode: true }).on('data', (chunk) => expect(chunk).toStrictEqual({}))
+		)
+    })   
+});
 
 // // read account
 // describe("read account", () => {
@@ -161,35 +161,35 @@ const context: Context = {
 //     })
 // });
 
-describe("Create User Account", () => {
-    // jest.setup.js
-    jest.setTimeout(50000);
+// describe("Create User Account", () => {
+//     // jest.setup.js
+//     jest.setTimeout(50000);
 
-    afterAll(async () => {
-        await new Promise<void>(resolve => setTimeout(() => resolve(), 10000)); // avoid jest open handle error
-    });
+//     afterAll(async () => {
+//         await new Promise<void>(resolve => setTimeout(() => resolve(), 10000)); // avoid jest open handle error
+//     });
 
 
-    let plan = {
-        identity: 'test4.fakeuser',
-        attributes: {
-            firstName: 'linda',
-            lastName: 'minda',
-            jobTitle: 'SOE',
-            email: 'test4@fakemail.com',
-            company: 'Acme'
-        }
-    } as StdAccountCreateInput;
+//     let plan = {
+//         identity: 'test4.fakeuser',
+//         attributes: {
+//             firstName: 'linda',
+//             lastName: 'minda',
+//             jobTitle: 'SOE',
+//             email: 'test4@fakemail.com',
+//             company: 'Acme'
+//         }
+//     } as StdAccountCreateInput;
 
-    test("[0] add user", async () => {
-        await connector._exec(
-            StandardCommand.StdAccountCreate,
-            context,
-            plan,
-            new PassThrough({ objectMode: true })
-        )
-    })
-});
+//     test("[0] add user", async () => {
+//         await connector._exec(
+//             StandardCommand.StdAccountCreate,
+//             context,
+//             plan,
+//             new PassThrough({ objectMode: true })
+//         )
+//     })
+// });
 
 // describe("Delete User Account", () => {
 //     // jest.setup.js
