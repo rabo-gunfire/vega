@@ -51,13 +51,13 @@ export const stdTestConnectionHandler: StdTestConnectionHandler = async (
 
             throw error;
         } else {
-            let err = new ConnectorError(`Test connection failed. ${error.message}`, error)
+            const err = new ConnectorError(`Test connection failed. ${error.message}`, error);
             console.error(err);
 
             throw err;
         }
     }
-}
+};
 
 /**
  * User account read handler.
@@ -82,13 +82,13 @@ export const stdAccountReadHandler: StdAccountReadHandler = async (
 
             throw error;
         } else {
-            let err = new ConnectorError(`Read account failed. ${error.message}`, error)
+            const err = new ConnectorError(`Read account failed. ${error.message}`, error);
             console.error(err);
 
             throw err;
         }
     }
-}
+};
 
 /**
  * User account aggregation handler.
@@ -113,13 +113,13 @@ export const stdAccountListHandler: StdAccountListHandler = async (
 
             throw error;
         } else {
-            let err = new ConnectorError(`Account aggrgation failed. ${error.message}`, error)
+            const err = new ConnectorError(`Account aggrgation failed. ${error.message}`, error);
             console.error(err);
 
             throw err;
         }
     }
-}
+};
 
 /**
  * Entitlement read handler.
@@ -134,10 +134,10 @@ export const stdEntitlementReadHandler: StdEntitlementReadHandler = async (
     input: StdEntitlementReadInput,
     res: Response<StdEntitlementReadOutput>): Promise<void> => {
 
-    let error = new ConnectorError('Operation not supported.')
+    const error = new ConnectorError('Operation not supported.');
     console.error(error);
     throw error;
-}
+};
 
 /**
  * Entitlement aggrgation handler.
@@ -162,13 +162,13 @@ export const stdEntitlementListHandler: StdEntitlementListHandler = async (
 
             throw error;
         } else {
-            let err = new ConnectorError(`Group aggrgation failed. ${error.message}`, error)
+            const err = new ConnectorError(`Group aggrgation failed. ${error.message}`, error);
             console.error(err);
 
             throw err;
         }
     }
-}
+};
 
 /**
  * User account creation handler.
@@ -193,13 +193,13 @@ export const stdAccountCreateHandler: StdAccountCreateHandler = async (
 
             throw error;
         } else {
-            let err = new ConnectorError(`Account creation failed. ${error.message}`, error)
+            const err = new ConnectorError(`Account creation failed. ${error.message}`, error);
             console.error(err);
 
             throw err;
         }
     }
-}
+};
 
 /**
  * User account updation handler.
@@ -224,13 +224,13 @@ export const stdAccountUpdateHandler: StdAccountUpdateHandler = async (
 
             throw error;
         } else {
-            let err = new ConnectorError(`Account updates failed.. ${error.message}`, error)
+            const err = new ConnectorError(`Account updates failed.. ${error.message}`, error);
             console.error(err);
 
             throw err;
         }
     }
-}
+};
 
 /**
  * User account deletion handler.
@@ -255,10 +255,10 @@ export const stdAccountDeleteHandler: StdAccountDeleteHandler = async (
 
             throw error;
         } else {
-            let err = new ConnectorError(`Account delete failed. ${error.message}`, error)
+            const err = new ConnectorError(`Account delete failed. ${error.message}`, error);
             console.error(err);
 
             throw err;
         }
     }
-}
+};

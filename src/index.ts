@@ -1,6 +1,6 @@
 /* Copyright (C) 2021 SailPoint Technologies, Inc.  All rights reserved. */
 
-import { Connector, createConnector } from '@sailpoint/connector-sdk'
+import { Connector, createConnector } from '@sailpoint/connector-sdk';
 import {
    stdAccountCreateHandler,
    stdAccountDeleteHandler,
@@ -10,7 +10,7 @@ import {
    stdEntitlementListHandler,
    stdEntitlementReadHandler,
    stdTestConnectionHandler,
-} from './connectors/dse-handlers'
+} from './connectors/dse-handlers';
 
 export const connector: Connector = createConnector()
    .stdTestConnection(stdTestConnectionHandler)
