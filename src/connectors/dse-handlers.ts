@@ -31,14 +31,14 @@ import { ConnectorError } from './ConnectorError';
 import { DseConnector } from './dse-connector';
 import { logger } from '../tools/logger';
 import { InvalidConfigurationError } from './InvalidConfigurationError';
-import { DocusignConfig } from './docusign-config';
+import { DseConfig } from './dse-config';
 
 /**
  * Validate source configurations.
  *
- * @param {DocusignConfig} config - Source configuration to validate
+ * @param {DseConfig} config - Source configuration to validate
  */
-const validateConfig = (config: any): DocusignConfig => {
+const validateConfig = (config: any): DseConfig => {
     if (!config?.apiUrl) {
         throw new InvalidConfigurationError(`'apiUrl' is required`);
     } else if (!config?.oauthServerUrl) {
@@ -57,7 +57,7 @@ const validateConfig = (config: any): DocusignConfig => {
 };
 
 // Create reusable connector object
-const config = validateConfig(readConfig() as DocusignConfig);
+const config = validateConfig(readConfig() as DseConfig);
 const dseConnector = new DseConnector(config);
 
 /**

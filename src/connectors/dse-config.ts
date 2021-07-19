@@ -3,7 +3,7 @@
 /**
  * Docusign eSignature app connectivity configuration definition
  */
-export interface DocusignConfig {
+export interface DseConfig {
     apiUrl: string
     oauthServerUrl: string
     accountId: string

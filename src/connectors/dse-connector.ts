@@ -26,7 +26,7 @@ import { InsufficientPermissionError } from './InsufficientPermissionError';
 import { ConnectorError } from './ConnectorError';
 import { InvalidRequestError } from './InvalidRequestError';
 import { InvalidResponseError } from './InvalidResponseError';
-import { DocusignConfig } from './docusign-config';
+import { DseConfig } from './dse-config';
 import { logger } from '../tools/logger';
 
 /**
@@ -39,9 +39,9 @@ export class DseConnector {
     /**
      * Constructor to initialize DocuSign client.
      * 
-     * @param {DocusignConfig} config - Source configuration
+     * @param {DseConfig} config - Source configuration
      */
-    constructor(config: DocusignConfig) {
+    constructor(config: DseConfig) {
         this.docuSign = new DocuSign(
             new DocuSignClient(config.apiUrl,
                 config.oauthServerUrl,
