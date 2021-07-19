@@ -136,6 +136,35 @@ describe("test connection", () => {
 //         await new Promise<void>(resolve => setTimeout(() => resolve(), 10000)); // avoid jest open handle error
 //     });
 
+// describe("Create User Account", () => {
+//     // jest.setup.js
+//     jest.setTimeout(50000);
+
+//     afterAll(async () => {
+//         await new Promise<void>(resolve => setTimeout(() => resolve(), 10000)); // avoid jest open handle error
+//     });
+
+//     let plan = {
+//         identity: 'test4.fakeuser',
+//         attributes: {
+//             firstName: 'test4',
+//             lastName: 'fakeuser',
+//             jobTitle: 'SOE',
+//             email: 'test4@fakemail.com',
+//             company: 'Acme',
+//             group: ['8275323', '8267667']
+//         }
+//     } as StdAccountCreateInput;
+
+//     test("[0] add user", async () => {
+//         await connector._exec(
+//             StandardCommand.StdAccountCreate,
+//             context,
+//             plan,
+//             new PassThrough({ objectMode: true })
+//         )
+//     })
+// });
 
 //     let plan: StdAccountUpdateOutput = {
 //         identity: 'f765915c-6fab-417e-a34e-07e61a4e01ba',
@@ -156,36 +185,6 @@ describe("test connection", () => {
 //     test("[0] add group", async () => {
 //         await connector._exec(
 //             StandardCommand.StdAccountUpdate,
-//             context,
-//             plan,
-//             new PassThrough({ objectMode: true })
-//         )
-//     })
-// });
-
-// describe("Create User Account", () => {
-//     // jest.setup.js
-//     jest.setTimeout(50000);
-
-//     afterAll(async () => {
-//         await new Promise<void>(resolve => setTimeout(() => resolve(), 10000)); // avoid jest open handle error
-//     });
-
-
-//     let plan = {
-//         identity: 'test4.fakeuser',
-//         attributes: {
-//             firstName: 'linda',
-//             lastName: 'minda',
-//             jobTitle: 'SOE',
-//             email: 'test4@fakemail.com',
-//             company: 'Acme'
-//         }
-//     } as StdAccountCreateInput;
-
-//     test("[0] add user", async () => {
-//         await connector._exec(
-//             StandardCommand.StdAccountCreate,
 //             context,
 //             plan,
 //             new PassThrough({ objectMode: true })

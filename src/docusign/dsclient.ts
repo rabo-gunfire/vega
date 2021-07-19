@@ -9,6 +9,8 @@ export class DocuSignClient {
     private readonly baseUriSuffix: string = '/restapi'
     private readonly authorizationHeader: string = 'Authorization';
     private readonly authenticationScheme: string = 'Bearer';
+    private apiUrl: string;
+    private oauthServerUrl: string;
     private clientId: string;
     private clientSecret: string;
     private refreshToken: string;
@@ -23,9 +25,11 @@ export class DocuSignClient {
      * Constructor to initialize DocuSign API client.
      */
     constructor(apiUrl: string, oauthServerUrl: string, clientId: string, clientSecret: string, refreshToken: string) {
-        this.refreshToken = refreshToken;
+        this.apiUrl = apiUrl;
+        this.oauthServerUrl = oauthServerUrl;
         this.clientId = clientId;
         this.clientSecret = clientSecret;
+        this.refreshToken = refreshToken;
 
         this._dsApiClient = new ApiClient({ basePath: apiUrl + this.baseUriSuffix, oAuthBasePath: oauthServerUrl });
     }
@@ -72,7 +76,7 @@ async refreshAccessToken(): Promise<void> {
 
     private async generateToken(): Promise<string> {
         const clientString: string = this.clientId + ':' + this.clientSecret;
-        const request = superagent.post('https://' + this._dsApiClient.getOAuthBasePath() + '/oauth/token')
+        const request = superagent.post(this.oauthServerUrl + '/oauth/token')
             .type('form')
             .accept('application/json')
             .set('Authorization', 'Basic ' + Buffer.from(clientString, 'utf-8').toString('base64'))

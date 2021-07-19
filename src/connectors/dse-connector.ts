@@ -264,8 +264,104 @@ export class DseConnector {
     }
 
     /**
+     * Create a new user account.
+     *
+     * @param {StdAccountCreateInput} input - New user definition.
+     * @param {Response<StdAccountCreateOutput>} res - stream to write a response.
+     */
+    async crateAccount(input: StdAccountCreateInput,
+        res: Response<StdAccountCreateOutput>): Promise<void> {
+        if (!input.identity) {
+            throw new InvalidRequestError('Username cannot be empty.');
+        }
+
+        // Separate entitlement and attribute updates
+        let userAttrs: any = { userName: input.identity };
+        let entitlements: string[] = [];
+        for (const key in input.attributes) {
+            if (key == 'group') {
+                if (input.attributes[key] instanceof Array) {
+                    entitlements = input.attributes[key];
+                } else {
+                    entitlements.push(input.attributes[key]);
+                }
+            } else {
+                userAttrs[key] = input.attributes[key];
+            }
+        }
+
+        // Attribute update payload
+        let users = [];
+        users.push(userAttrs);
+
+        // Always refresh a token before interacting with DocuSign eSgintaure app
+        await this.docuSign.dsClient.refreshAccessToken();
+
+        let result;
+        try {
+            result = await this.docuSign.createUser(this.accountId, { newUsersDefinition: { newUsers: users } });
+        } catch (error) {
+            this.convertToConnectorError(error);
+        }
+
+        if (!result) {
+            throw new InvalidResponseError('Found empty response for user creation.');
+        }
+
+        if ((result as any).errno && (result as any).code) {
+            this.convertToConnectorError(result as any);
+        }
+
+        let userId: string = '';
+        if (result.newUsers && result.newUsers.length > 0 && result.newUsers[0].userId) {
+            userId = (result.newUsers[0].userId) as string;
+        }
+
+        // Entitlement updates, if any
+        let entUpdateErrors: any[] = [];
+        let entUpdateUserErrors: any[] = [];
+        let entUpdateWireErrors: any[] = [];
+        let numOfEntUpdateErrors = 0;
+        if (entitlements.length > 0 && userId) {
+            await Promise.all(entitlements.map(async (group: string ) => {
+                return await
+                        this.docuSign
+                            .updateGroupUsers(this.accountId, group, { userInfoList: { users: [{ userId: userId }] } })
+                            .catch((error) => error);
+
+            }))
+            .then((resList) => {
+                entUpdateErrors = resList.filter((res) => res instanceof Error);
+                entUpdateUserErrors = resList.filter((res) => (res.users?.length && res.users[0].errorDetails));
+                entUpdateWireErrors = resList.filter((res) => (res.code && res.errno));
+            });
+
+            numOfEntUpdateErrors = entUpdateErrors.length + entUpdateUserErrors.length + entUpdateWireErrors.length;
+        }
+
+        if (userId) {
+            if (numOfEntUpdateErrors > 0) {
+                if (numOfEntUpdateErrors == entitlements.length) {
+                    logger.warn(`All entitlement updates failed for the account [${userId}]`);
+                } else {
+                    logger.warn(`Some entitlement updates failed for the account [${userId}]`);
+                }
+                entUpdateErrors.forEach((error) => logger.warn( { cause: error }, 'Entitlement update failed.'));
+                entUpdateUserErrors.forEach((error) => logger.warn( { cause: error }, 'Entitlement update failed.'));
+                entUpdateWireErrors.forEach((error) => logger.warn( { cause: error }, 'Entitlement update failed.'));
+            }
+
+            // send back a new user
+            res.send(await this.userAccountRead(userId) as StdAccountCreateOutput);
+        } else {
+            // safer side ..
+            throw new ConnectorError('User creation failed.');
+        }
+    }
+
+    /**
      * Update an account for entitlements and attributes.
-     * 
+     *
      * @param {StdAccountUpdateInput} plan - attribute changes
      * @param {Response<StdAccountUpdateOutput>} res - stream to write a response.
      */
@@ -348,6 +444,7 @@ export class DseConnector {
         } else if (entitlementsUpdates.length == 0 && attrUpdates.length > 0) { // if request only for attribute updates
             if (numOfAttrUpdateErrors > 0) {
                 logger.error(`Attribute updates to the account [${userId}] are failed.`);
+
                 this.convertToConnectorError(attrUpdateRes);
             }
 
@@ -356,15 +453,19 @@ export class DseConnector {
         } else if (entitlementsUpdates.length > 0 && attrUpdates.length > 0) { // if mixed request
             if (numOfAttrUpdateErrors == 0 && numOfEntUpdateErrors > 0) {
                 logger.warn(`Entitlement updates to the account [${userId}] are failed.`);
+
                 res.send(await this.userAccountRead(userId) as StdAccountUpdateOutput);
             } else if (numOfAttrUpdateErrors > 0 && numOfEntUpdateErrors == 0) {
                 logger.warn(`Attribute updates to the account [${userId}] are failed.`);
+
                 res.send(await this.userAccountRead(userId) as StdAccountUpdateOutput);
             } else if (numOfAttrUpdateErrors > 0 && numOfEntUpdateErrors > 0) {
                 if (numOfEntUpdateErrors == entitlementsUpdates.length && numOfAttrUpdateErrors == 1) {
                     throw new ConnectorError(`All updates to the account [${userId}] are failed.`);
                 }
+
                 logger.warn(`Some updates to the account [${userId}] are failed.`);
+
                 res.send(await this.userAccountRead(userId) as StdAccountUpdateOutput);
             } else if (numOfAttrUpdateErrors == 0 && numOfEntUpdateErrors == 0) {
                 // full success
@@ -374,58 +475,10 @@ export class DseConnector {
     }
 
     /**
-     * Create a new user account.
-     * 
-     * @param {StdAccountCreateInput} input - New user definition.
-     * @param {Response<StdAccountCreateOutput>} res - stream to write a response.
-     */
-    async crateAccount(input: StdAccountCreateInput,
-        res: Response<StdAccountCreateOutput>): Promise<void> {
-            if (!input.identity) {
-                throw new InvalidRequestError('Username cannot be empty.');
-            }
-            
-            // Form the JSON payload
-            let userAttrs: any= {};
-            for (const key in input.attributes) {
-                userAttrs[key] = input.attributes[key];
-            }
-            userAttrs['userName'] = input.identity;
-            let users = [];
-            users.push(userAttrs);
-
-            // Always refresh a token before interacting with DocuSign eSgintaure app
-            await this.docuSign.dsClient.refreshAccessToken();
-
-            let result;
-            try {
-                result = await this.docuSign.createUser(this.accountId, { newUsersDefinition: { newUsers: users } } );
-            } catch (error) {
-                this.convertToConnectorError(error);
-            }
-    
-            if (!result) {
-                throw new InvalidResponseError('Found empty response for user creation.');
-            }
-    
-            if ((result as any).errno && (result as any).code) {
-                this.convertToConnectorError(result as any);
-            }
-
-            if (result.newUsers && result.newUsers.length > 0 && result.newUsers[0].userId) {
-                // send back a new user 
-                res.send(await this.userAccountRead(result.newUsers[0].userId) as StdAccountCreateOutput);
-            } else {
-                // convey an error for safer side
-                throw new ConnectorError('User creation failed.');
-            }        
-    }
-
-    /**
      * Removes users account privileges.
      * This closes one or more user records in the account. Users are never deleted
      * from an account, but closing a user prevents them from using account functions.
-     * 
+     *
      * @param {StdAccountDeleteInput} input - Native identifier to delete.
      * @param {Response<StdAccountDeleteOutput>} res - stream to write a response.
      */
@@ -510,29 +563,8 @@ export class DseConnector {
     }
 
     /**
-     * Validate source configurations.
-     * 
-     * @param {any} config - Source configuration to validate
-     */
-    private validateConfiguration(config: any): void {
-        if (!config?.apiUrl) {
-            throw new InvalidConfigurationError(`'apiUrl' is required`);
-        } else if (!config?.oauthServerUrl) {
-            throw new InvalidConfigurationError(`'oauthServerUrl' is required`);
-        } else if (!config?.accountId) {
-            throw new InvalidConfigurationError(`'accountId' is required`);
-        } else if (!config?.clientId) {
-            throw new InvalidConfigurationError(`'clientId' is required`);
-        } else if (!config?.clientSecret) {
-            throw new InvalidConfigurationError(`'clientSecret' is required`);
-        } else if (!config?.refreshToken) {
-            throw new InvalidConfigurationError(`'refreshToken' is required`);
-        }
-    }
-
-    /**
      * Convert error to an appropriate ConnectorError.
-     * 
+     *
      * @param {Error | any} err - An error object.
      */
     private convertToConnectorError(err: Error | any): void {
