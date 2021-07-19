@@ -18,7 +18,10 @@ export const logger = pino ({
         return { AppType: 'DocuSign eSignature' };
     },
     redact: {
-        paths: ['cause.response.request._header.authorization'],
+        paths: [
+            'cause.response.request._header.authorization',
+            'response.request._header.authorization'
+        ],
         censor: '****'
     }
 });
