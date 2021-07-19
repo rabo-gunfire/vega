@@ -2,6 +2,7 @@
 
 import {
     Context,
+    readConfig,
     Response,
     StdAccountCreateHandler,
     StdAccountCreateInput,
@@ -28,6 +29,36 @@ import {
 
 import { ConnectorError } from './ConnectorError';
 import { DseConnector } from './dse-connector';
+import { logger } from '../tools/logger';
+import { InvalidConfigurationError } from './InvalidConfigurationError';
+import { DseConfig } from './dse-config';
+
+/**
+ * Validate source configurations.
+ *
+ * @param {DseConfig} config - Source configuration to validate
+ */
+const validateConfig = (config: any): DseConfig => {
+    if (!config?.apiUrl) {
+        throw new InvalidConfigurationError(`'apiUrl' is required`);
+    } else if (!config?.oauthServerUrl) {
+        throw new InvalidConfigurationError(`'oauthServerUrl' is required`);
+    } else if (!config?.accountId) {
+        throw new InvalidConfigurationError(`'accountId' is required`);
+    } else if (!config?.clientId) {
+        throw new InvalidConfigurationError(`'clientId' is required`);
+    } else if (!config?.clientSecret) {
+        throw new InvalidConfigurationError(`'clientSecret' is required`);
+    } else if (!config?.refreshToken) {
+        throw new InvalidConfigurationError(`'refreshToken' is required`);
+    }
+
+    return config;
+};
+
+// Create reusable connector object
+const config = validateConfig(readConfig() as DseConfig);
+const dseConnector = new DseConnector(config);
 
 /**
  * Connection check handler.
@@ -42,17 +73,16 @@ export const stdTestConnectionHandler: StdTestConnectionHandler = async (
     input: undefined,
     res: Response<StdTestConnectionOutput>): Promise<void> => {
     try {
-        let dseConnector = new DseConnector(context);
         await dseConnector.testConnection(res);
     } catch (error) {
         if (error instanceof ConnectorError) {
-            console.error('Test connection failed.');
-            console.error(error);
+            logger.error('Test connection failed.');
+            logger.error(error);
 
             throw error;
         } else {
             const err = new ConnectorError(`Test connection failed. ${error.message}`, error);
-            console.error(err);
+            logger.error(err);
 
             throw err;
         }
@@ -73,17 +103,16 @@ export const stdAccountReadHandler: StdAccountReadHandler = async (
     res: Response<StdAccountReadOutput>): Promise<void> => {
 
     try {
-        let dseConnector = new DseConnector(context);
         await dseConnector.readAccount(input, res);
     } catch (error) {
         if (error instanceof ConnectorError) {
-            console.error('Read account failed.');
-            console.error(error);
+            logger.error('Read account failed.');
+            logger.error(error);
 
             throw error;
         } else {
             const err = new ConnectorError(`Read account failed. ${error.message}`, error);
-            console.error(err);
+            logger.error(err);
 
             throw err;
         }
@@ -104,17 +133,16 @@ export const stdAccountListHandler: StdAccountListHandler = async (
     res: Response<StdAccountListOutput>): Promise<void> => {
 
     try {
-        let dseConnector = new DseConnector(context);
         await dseConnector.listAccounts(res);
     } catch (error) {
         if (error instanceof ConnectorError) {
-            console.error('Account aggrgation failed.');
-            console.error(error);
+            logger.error('Account aggregation failed.');
+            logger.error(error);
 
             throw error;
         } else {
-            const err = new ConnectorError(`Account aggrgation failed. ${error.message}`, error);
-            console.error(err);
+            const err = new ConnectorError(`Account aggregation failed. ${error.message}`, error);
+            logger.error(err);
 
             throw err;
         }
@@ -135,12 +163,12 @@ export const stdEntitlementReadHandler: StdEntitlementReadHandler = async (
     res: Response<StdEntitlementReadOutput>): Promise<void> => {
 
     const error = new ConnectorError('Operation not supported.');
-    console.error(error);
+    logger.error(error);
     throw error;
 };
 
 /**
- * Entitlement aggrgation handler.
+ * Entitlement aggregation handler.
  * 
  * @param {Context} context - Source configuration.
  * @param {undefined} input - none.
@@ -153,17 +181,16 @@ export const stdEntitlementListHandler: StdEntitlementListHandler = async (
     res: Response<StdEntitlementListOutput>): Promise<void> => {
 
     try {
-        let dseConnector = new DseConnector(context);
         await dseConnector.listEntitlements(res);
     } catch (error) {
         if (error instanceof ConnectorError) {
-            console.error('Group aggrgation failed.');
-            console.error(error);
+            logger.error('Group aggregation failed.');
+            logger.error(error);
 
             throw error;
         } else {
-            const err = new ConnectorError(`Group aggrgation failed. ${error.message}`, error);
-            console.error(err);
+            const err = new ConnectorError(`Group aggregation failed. ${error.message}`, error);
+            logger.error(err);
 
             throw err;
         }
@@ -184,17 +211,16 @@ export const stdAccountCreateHandler: StdAccountCreateHandler = async (
     res: Response<StdAccountCreateOutput>): Promise<void> => {
 
     try {
-        let dseConnector = new DseConnector(context);
         await dseConnector.crateAccount(input, res);
     } catch (error) {
         if (error instanceof ConnectorError) {
-            console.error('Account creation failed.');
-            console.error(error);
+            logger.error('Account creation failed.');
+            logger.error(error);
 
             throw error;
         } else {
             const err = new ConnectorError(`Account creation failed. ${error.message}`, error);
-            console.error(err);
+            logger.error(err);
 
             throw err;
         }
@@ -202,7 +228,7 @@ export const stdAccountCreateHandler: StdAccountCreateHandler = async (
 };
 
 /**
- * User account updation handler.
+ * User account updating handler.
  * 
  * @param {Context} context - Source configuration.
  * @param {StdAccountCreateInput} input - User account update attribute change plan.
@@ -215,17 +241,16 @@ export const stdAccountUpdateHandler: StdAccountUpdateHandler = async (
     res: Response<StdAccountUpdateOutput>): Promise<void> => {
 
     try {
-        let dseConnector = new DseConnector(context);
         await dseConnector.updateAccount(input, res);
     } catch (error) {
         if (error instanceof ConnectorError) {
-            console.error('Account updates failed.');
-            console.error(error);
+            logger.error('Account updates failed.');
+            logger.error(error);
 
             throw error;
         } else {
             const err = new ConnectorError(`Account updates failed.. ${error.message}`, error);
-            console.error(err);
+            logger.error(err);
 
             throw err;
         }
@@ -246,17 +271,16 @@ export const stdAccountDeleteHandler: StdAccountDeleteHandler = async (
     res: Response<StdAccountDeleteOutput>): Promise<void> => {
 
     try {
-        let dseConnector = new DseConnector(context);
         await dseConnector.deleteAccount(input, res);
     } catch (error) {
         if (error instanceof ConnectorError) {
-            console.error('Account delete failed.');
-            console.error(error);
+            logger.error('Account delete failed.');
+            logger.error(error);
 
             throw error;
         } else {
             const err = new ConnectorError(`Account delete failed. ${error.message}`, error);
-            console.error(err);
+            logger.error(err);
 
             throw err;
         }

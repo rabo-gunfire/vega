@@ -7,7 +7,7 @@
  */
 export class ConnectorError extends Error {
     /**
-     * casue of exception
+     * cause of exception
      */
     public cause: Error | undefined;
 
