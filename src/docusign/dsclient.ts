@@ -48,16 +48,16 @@ export class DocuSignClient {
     }
 
     /**
-     * Genrates access token using refresh_token oAuth
+     * Generates access token using refresh_token oAuth
      * flow and add access token to requests header.
      */
-async refreshAccessToekn(): Promise<void> {
+async refreshAccessToken(): Promise<void> {
         // generate token
         let token;
         try {
             token = await this.generateToken();
         } catch (error) {
-            throw new ConnectorError('Failed to generate an access toekn.', error);
+            throw new ConnectorError('Failed to generate an access token.', error);
         }
 
         if (!token) {

@@ -1,5 +1,4 @@
 /* Copyright (C) 2021 SailPoint Technologies, Inc.  All rights reserved. */
-
 import {
     AttributeChange,
     Context,
@@ -12,7 +11,6 @@ import {
 } from '@sailpoint/connector-sdk';
 import { rejects } from 'assert';
 import { PassThrough } from 'stream';
-import { connector } from '../src/index';
 
 // initialize app configuration context
 const context: Context = {
@@ -28,6 +26,10 @@ const context: Context = {
     name: "test connection",
     version: 1.0
 }
+
+process.env.CONNECTOR_CONFIG = Buffer.from(JSON.stringify(context.config), 'utf-8').toString('base64');
+
+import { connector } from '../src/index';
 
 // test connection
 describe("test connection", () => {
