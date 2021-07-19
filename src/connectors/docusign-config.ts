@@ -3,10 +3,10 @@
 /**
  * Docusign eSignature app connectivity configuration definition
  */
- export interface DocusignConfig {
-	apiUrl: string
+export interface DocusignConfig {
+    apiUrl: string
     oauthServerUrl: string
-	accountId: string
+    accountId: string
     clientId: string
     clientSecret: string
     refreshToken: string
