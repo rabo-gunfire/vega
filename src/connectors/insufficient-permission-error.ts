@@ -1,6 +1,6 @@
 /* Copyright (C) 2021 SailPoint Technologies, Inc.  All rights reserved. */
 
-import { ConnectorError } from "./ConnectorError";
+import { ConnectorError } from "./connector-error";
 
 /**
  * Thrown when an user/token has insufficient permissions to perform this operation. This includes

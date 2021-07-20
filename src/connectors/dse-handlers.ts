@@ -27,10 +27,10 @@ import {
     StdTestConnectionOutput,
 } from '@sailpoint/connector-sdk';
 
-import { ConnectorError } from './ConnectorError';
+import { ConnectorError } from './connector-error';
 import { DseConnector } from './dse-connector';
 import { logger } from '../tools/logger';
-import { InvalidConfigurationError } from './InvalidConfigurationError';
+import { InvalidConfigurationError } from './invalid-configuration-error';
 import { DseConfig } from './dse-config';
 
 /**
