@@ -31,7 +31,9 @@ process.env.CONNECTOR_CONFIG = Buffer.from(JSON.stringify(context.config), 'utf-
 
 import { connector } from '../src/index';
 
-// test connection
+/**
+ * Test the connection
+ */
 describe("test connection", () => {
     afterAll(async () => {
         await new Promise<void>(resolve => setTimeout(() => resolve(), 10000)); // avoid jest open handle error
@@ -46,11 +48,13 @@ describe("test connection", () => {
 			undefined,
 			new PassThrough({ objectMode: true }).on('data', (chunk) => expect(chunk).toStrictEqual({}))
 		)
-    })   
+    })
 });
 
-// // read account
-// describe("read account", () => {
+/**
+ * Read an account
+ */
+// describe("Read Account", () => {
 //     // jest.setup.js
 //     jest.setTimeout(50000);
 
@@ -69,8 +73,10 @@ describe("test connection", () => {
 //     })
 // });
 
-// // list account
-// describe("list account", () => {
+/**
+ * List all accounts
+ */
+// describe("List Accounts", () => {
 //     // jest.setup.js
 //     jest.setTimeout(50000);
 
@@ -87,7 +93,9 @@ describe("test connection", () => {
 //     })
 // });
 
-// // Read entitlement
+/**
+ * Read an entitlement
+ */
 // describe("Read Entitlement", () => {
 //     test("[0] errored?", async () => {
 //         expect(connector._exec (
@@ -108,7 +116,9 @@ describe("test connection", () => {
 //     })
 // });
 
-// // list account
+/**
+ * List all entitlements
+ */
 // describe("List Entitlements", () => {
 //     // jest.setup.js
 //     jest.setTimeout(50000);
@@ -127,15 +137,9 @@ describe("test connection", () => {
 //     })
 // });
 
-// update account
-// describe("Update Account", () => {
-//     // jest.setup.js
-//     jest.setTimeout(50000);
-
-//     afterAll(async () => {
-//         await new Promise<void>(resolve => setTimeout(() => resolve(), 10000)); // avoid jest open handle error
-//     });
-
+/**
+ * Create Account
+ */
 // describe("Create User Account", () => {
 //     // jest.setup.js
 //     jest.setTimeout(50000);
@@ -166,23 +170,39 @@ describe("test connection", () => {
 //     })
 // });
 
-//     let plan: StdAccountUpdateOutput = {
-//         identity: 'f765915c-6fab-417e-a34e-07e61a4e01ba',
+/**
+ * Update an account
+ */
+// describe("Update Account", () => {
+//     // jest.setup.js
+//     jest.setTimeout(50000);
+
+//     afterAll(async () => {
+//         await new Promise<void>(resolve => setTimeout(() => resolve(), 10000)); // avoid jest open handle error
+//     });
+
+//     const plan = {
+//         identity: '542892d7-4033-4563-90a0-c462c10eddcb',
 //         changes: [
 //             {
 //                 op: 'Add',
-//                 attribute: 'group',
-//                 value: '8275323'
+//                 attribute: 'email',
+//                 value: 'test33@fakemail.com'
 //             },
 //             {
 //                 op: 'Add',
 //                 attribute: 'jobTitle',
-//                 value: 'SOE'
-//             }
+//                 value: 'SOEEE'
+//             },
+//             {
+//                 op: 'Add',
+//                 attribute: 'userName',
+//                 value: 'test33.fakeuser'
+//             },
 //         ]
 //     } as StdAccountUpdateOutput;
 
-//     test("[0] add group", async () => {
+//     test("[0] update account attributes", async () => {
 //         await connector._exec(
 //             StandardCommand.StdAccountUpdate,
 //             context,
@@ -192,6 +212,9 @@ describe("test connection", () => {
 //     })
 // });
 
+/**
+ * Delete user account
+ */
 // describe("Delete User Account", () => {
 //     // jest.setup.js
 //     jest.setTimeout(50000);

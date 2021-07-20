@@ -174,22 +174,25 @@ export class DseConnector {
                     uuid: user.userId,
                     attributes: {
                         userName: user.userName,
-                        firstName: user.firstName,
-                        lastName: user.lastName,
+                        userId: user.userId,
                         userType: user.userType,
-                        uri: user.uri,
-                        email: user.email,
-                        company: user.company,
-                        jobTitle: user.jobTitle,
                         isAdmin: user.isAdmin,
                         isNAREnabled: user.isNAREnabled,
                         userStatus: user.userStatus,
-                        defaultAccountId: user.defaultAccountId,
-                        createdDateTime: user.createdDateTime,
+                        uri: user.uri,
+                        email: user.email,
+                        firstName: user.firstName,
+                        lastName: user.lastName,
+                        jobTitle: user.jobTitle,
+                        company: user.company,
+                        permissionProfileId: user.permissionProfileId,
+                        permissionProfileName: user.permissionProfileName,
                         sendActivationOnInvalidLogin: user.sendActivationOnInvalidLogin,
                         enableConnectForUser: user.enableConnectForUser,
-                        lastLogin: user.lastLogin,
-                        groups: user.groupList?.map((group: Group) => group?.groupId)
+                        groups: user.groupList?.map((group: Group) => group?.groupId),
+                        defaultAccountId: user.defaultAccountId,
+                        createdDateTime: user.createdDateTime,
+                        lastLogin: user.lastLogin
                     }
                 } as StdAccountListOutput);
             });
@@ -253,6 +256,7 @@ export class DseConnector {
                     identity: group.groupName,
                     uuid: group.groupId,
                     attributes: {
+                        groupId: group.groupId,
                         groupName: group.groupName,
                         groupType: group.groupType,
                         permissionProfileId: group.permissionProfileId,
@@ -275,8 +279,8 @@ export class DseConnector {
             throw new InvalidRequestError('Username cannot be empty.');
         }
 
-        // Separate entitlement and attribute updates
-        let userAttrs: any = { userName: input.identity };
+        // Lets separate entitlement and attribute updates
+        const userAttrs: any = { userName: input.identity };
         let entitlements: string[] = [];
         for (const key in input.attributes) {
             if (key == 'group') {
@@ -291,7 +295,7 @@ export class DseConnector {
         }
 
         // Attribute update payload
-        let users = [];
+        const users = [];
         users.push(userAttrs);
 
         // Always refresh a token before interacting with DocuSign eSgintaure app
@@ -312,7 +316,7 @@ export class DseConnector {
             this.convertToConnectorError(result as any);
         }
 
-        let userId: string = '';
+        let userId = '';
         if (result.newUsers && result.newUsers.length > 0 && result.newUsers[0].userId) {
             userId = (result.newUsers[0].userId) as string;
         }
@@ -413,13 +417,14 @@ export class DseConnector {
 
         // Account attribute updates
         let numOfAttrUpdateErrors = 0;
+        let attrUpdateRes;
         if (attrUpdates.length > 0) {
-            let userAttrJson: any = {};
+            const userAttrJson: any = {};
             attrUpdates.forEach((item: AttributeChange, index: number) => {
                 userAttrJson[item.attribute] = item.value;
             });
 
-            var attrUpdateRes = await
+            attrUpdateRes = await
                 this.docuSign
                     .updateUser(this.accountId, userId, { userInformation: userAttrJson })
                     .catch((error) => error);
@@ -535,27 +540,30 @@ export class DseConnector {
         }
 
         result = result as UserInformation;
-        let userAccount = {
+        const userAccount = {
             identity: result.userName,
             uuid: result.userId,
             attributes: {
                 userName: result.userName,
-                firstName: result.firstName,
-                lastName: result.lastName,
+                userId: result.userId,
                 userType: result.userType,
-                uri: result.uri,
-                email: result.email,
-                company: result.company,
-                jobTitle: result.jobTitle,
                 isAdmin: result.isAdmin,
                 isNAREnabled: result.isNAREnabled,
                 userStatus: result.userStatus,
-                defaultAccountId: result.defaultAccountId,
-                createdDateTime: result.createdDateTime,
+                uri: result.uri,
+                email: result.email,
+                firstName: result.firstName,
+                lastName: result.lastName,
+                jobTitle: result.jobTitle,
+                company: result.company,
+                permissionProfileId: result.permissionProfileId,
+                permissionProfileName: result.permissionProfileName,
                 sendActivationOnInvalidLogin: result.sendActivationOnInvalidLogin,
                 enableConnectForUser: result.enableConnectForUser,
-                lastLogin: result.lastLogin,
-                groups: result.groupList?.map((group: Group) => group?.groupId)
+                groups: result.groupList?.map((group: Group) => group?.groupId),
+                defaultAccountId: result.defaultAccountId,
+                createdDateTime: result.createdDateTime,
+                lastLogin: result.lastLogin
             }
         } as StdAccountReadOutput;
 
