@@ -1,6 +1,6 @@
 /* Copyright (C) 2021 SailPoint Technologies, Inc.  All rights reserved. */
 
-import { ConnectorError } from "./ConnectorError";
+import { ConnectorError } from "./connector-error";
 
 /**
  * Thrown when a connector interaction with a target system fails. This includes

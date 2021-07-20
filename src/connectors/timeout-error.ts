@@ -1,6 +1,6 @@
 /* Copyright (C) 2021 SailPoint Technologies, Inc.  All rights reserved. */
 
-import { ConnectionFailedError } from "./ConnectionFailedError";
+import { ConnectionFailedError } from "./connection-failed-error";
 
 /**
  * Thrown when a connector interaction with a target system timeouts. This includes

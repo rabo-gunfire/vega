@@ -2,8 +2,8 @@
 
 import { ApiClient } from "docusign-esign";
 import superagent, { Response, ResponseError } from "superagent";
-import { ConnectorError } from "../connectors/ConnectorError";
-import { InvalidResponseError } from "../connectors/InvalidResponseError";
+import { ConnectorError } from "../connectors/connector-error";
+import { InvalidResponseError } from "../connectors/invalid-response-error";
 
 export class DocuSignClient {
     private readonly baseUriSuffix: string = '/restapi'

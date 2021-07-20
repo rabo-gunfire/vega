@@ -21,11 +21,11 @@ import {
 
 import { DocuSignClient } from '../docusign/dsclient';
 import { DocuSign } from '../docusign/docusign';
-import { InvalidConfigurationError } from './InvalidConfigurationError';
-import { InsufficientPermissionError } from './InsufficientPermissionError';
-import { ConnectorError } from './ConnectorError';
-import { InvalidRequestError } from './InvalidRequestError';
-import { InvalidResponseError } from './InvalidResponseError';
+import { InvalidConfigurationError } from './invalid-configuration-error';
+import { InsufficientPermissionError } from './insufficient-permission-error';
+import { ConnectorError } from './connector-error';
+import { InvalidRequestError } from './invalid-request-error';
+import { InvalidResponseError } from './invalid-response-error';
 import { DseConfig } from './dse-config';
 import { logger } from '../tools/logger';
 
