@@ -1,4 +1,5 @@
 /* Copyright (C) 2021 SailPoint Technologies, Inc.  All rights reserved. */
+
 import {
     AttributeChange,
     Context,
@@ -9,6 +10,7 @@ import {
     StdAccountReadInput,
     StdAccountUpdateOutput
 } from '@sailpoint/connector-sdk';
+
 import { rejects } from 'assert';
 import { PassThrough } from 'stream';
 
@@ -23,13 +25,16 @@ const context: Context = {
         refreshToken: 'eyJ0eXAiOiJNVCIsImFsZyI6IlJTMjU2Iiwia2lkIjoiNjgxODVmZjEtNGU1MS00Y2U5LWFmMWMtNjg5ODEyMjAzMzE3In0.AQoAAAABAAgABwCA5oP4OzbZSAgAgGbo8M5N2UgCAGPeujRj2BJNpA1azVoR_tAVAAEAAAAYAAEAAAAFAAAADQAkAAAAZGY0NWViNzAtYmEwZi00MTA2LTllMGYtY2U4M2ZkYjRkNGE5IgAkAAAAZGY0NWViNzAtYmEwZi00MTA2LTllMGYtY2U4M2ZkYjRkNGE5MAAAFhgbsizZSDcAJrckfLbkskWwVEu_I6YOXQ.BIvZBgvAXLdM7dhbSCZxUMgQKBP5n60m7z39HPb0pWPTry5cUaPQr5yMzQdBzkebFhuCcLmGHJl-5S-kz8vpmwsE_1JCPOxU-j2TDWYtsoqnmSYKhA_t2CXGWOr84ac1_ZpgWtL5QVzUfK8ypW-NB8yVkAS3y3whQ22hk9noe-i6OhF1pPYV20p37ezK-_K5ITLBA4CH8TJR4XvXWTbzJvRXwaJPbaW70mQf2df_Yk_7iFhy3gbfq-w-jwk9wV4c3qOi1semgflQR8vARyaE_NGT7FJJA0oow_kAQbXheR39ALoQEPfFdGwkwK9wXg326Fc1kUrZlKtOqQOvfSU2pw'
     },
     id: "eyJ0eXAiOiJNVCIs-101",
-    name: "test connection",
+    name: "DocuSign eSignature",
     version: 1.0
 }
 
 process.env.CONNECTOR_CONFIG = Buffer.from(JSON.stringify(context.config), 'utf-8').toString('base64');
 
 import { connector } from '../src/index';
+
+// Integration tests shouldn't mock anything.
+jest.unmock("superagent");
 
 /**
  * Test the connection
@@ -40,7 +45,7 @@ describe("test connection", () => {
     });
 
     // jest.setup.js
-    jest.setTimeout(30000);
+    jest.setTimeout(50000);
 
     test("0", async () => {
         await connector._exec(StandardCommand.StdTestConnection,

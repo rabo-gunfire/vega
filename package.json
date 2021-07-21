@@ -17,7 +17,7 @@
     "clean": "npx shx rm -rf ./dist ./coverage",
     "prebuild": "npm run clean",
     "build": "npx tsc",
-    "test": "npx jest",
+    "test": "npx jest --detectOpenHandles",
     "lint": "eslint . --ext .ts",
     "prettier": "npx prettier --config .prettierrc.json --write .",
     "start": "node ./dist/index.js",

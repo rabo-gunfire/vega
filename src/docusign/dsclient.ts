@@ -55,7 +55,7 @@ export class DocuSignClient {
      * Generates access token using refresh_token oAuth
      * flow and add access token to requests header.
      */
-async refreshAccessToken(): Promise<void> {
+    async refreshAccessToken(): Promise<void> {
         // generate token
         let token;
         try {
