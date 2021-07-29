@@ -47,7 +47,7 @@ export class DocuSignClient {
      * 
      * @returns {any} OAuth UserInfo model.
      */
-    getTokenUserInfo(): Promise<any> {
+    async getTokenUserInfo(): Promise<any> {
         return this.dsApiClient.getUserInfo(this.accessToken);
     }
 

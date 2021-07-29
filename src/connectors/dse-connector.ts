@@ -85,10 +85,6 @@ export class DseConnector {
             throw new InvalidResponseError('Found empty response for user read.');
         }
 
-        if ((user as any).errno && (user as any).code) {
-            this.convertToConnectorError(user as any);
-        }
-
         // success
         res.send({});
     }
@@ -150,10 +146,6 @@ export class DseConnector {
 
             if (!result) {
                 throw new InvalidResponseError(`Found empty response for user read. Offset: ${opts.startPosition}`);
-            }
-
-            if ((result as any).errno && (result as any).code) {
-                this.convertToConnectorError(result as any);
             }
 
             result = result as UserInformationList;
@@ -235,10 +227,6 @@ export class DseConnector {
                 throw new InvalidResponseError(`Found empty response for group read. Offset: ${opts.startPosition}`);
             }
 
-            if ((result as any).errno && (result as any).code) {
-                this.convertToConnectorError(result as any);
-            }
-
             result = result as GroupInformation;
 
             // next index position to fetch user records
@@ -310,10 +298,6 @@ export class DseConnector {
 
         if (!result) {
             throw new InvalidResponseError('Found empty response for user creation.');
-        }
-
-        if ((result as any).errno && (result as any).code) {
-            this.convertToConnectorError(result as any);
         }
 
         let userId = '';
@@ -508,10 +492,6 @@ export class DseConnector {
             throw new InvalidResponseError('Found empty response for user deletion.');
         }
 
-        if ((result as any).errno && (result as any).code) {
-            this.convertToConnectorError(result as any);
-        }
-
         // Add empty response to convey success
         res.send({});
     }
@@ -533,10 +513,6 @@ export class DseConnector {
 
         if (!result) {
             throw new InvalidResponseError('Found empty response for user read.');
-        }
-
-        if ((result as any).errno && (result as any).code) {
-            this.convertToConnectorError(result as any);
         }
 
         result = result as UserInformation;
