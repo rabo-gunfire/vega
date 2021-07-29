@@ -36,6 +36,8 @@ export class DseConnector {
     private docuSign: DocuSign;
     private accountId: string;
 
+    private groupAttr = 'groups';
+
     /**
      * Constructor to initialize DocuSign client.
      * 
@@ -271,7 +273,7 @@ export class DseConnector {
         const userAttrs: any = { userName: input.identity };
         let entitlements: string[] = [];
         for (const key in input.attributes) {
-            if (key == 'group') {
+            if (key == this.groupAttr) {
                 if (input.attributes[key] instanceof Array) {
                     entitlements = input.attributes[key];
                 } else {
@@ -311,18 +313,18 @@ export class DseConnector {
         let entUpdateWireErrors: any[] = [];
         let numOfEntUpdateErrors = 0;
         if (entitlements.length > 0 && userId) {
-            await Promise.all(entitlements.map(async (group: string ) => {
+            await Promise.all(entitlements.map(async (group: string) => {
                 return await
-                        this.docuSign
-                            .updateGroupUsers(this.accountId, group, { userInfoList: { users: [{ userId: userId }] } })
-                            .catch((error) => error);
+                    this.docuSign
+                        .updateGroupUsers(this.accountId, group, { userInfoList: { users: [{ userId: userId }] } })
+                        .catch((error) => error);
 
             }))
-            .then((resList) => {
-                entUpdateErrors = resList.filter((res) => res instanceof Error);
-                entUpdateUserErrors = resList.filter((res) => (res.users?.length && res.users[0].errorDetails));
-                entUpdateWireErrors = resList.filter((res) => (res.code && res.errno));
-            });
+                .then((resList) => {
+                    entUpdateErrors = resList.filter((res) => res instanceof Error);
+                    entUpdateUserErrors = resList.filter((res) => (res.users?.length && res.users[0].errorDetails));
+                    entUpdateWireErrors = resList.filter((res) => (res.code && res.errno));
+                });
 
             numOfEntUpdateErrors = entUpdateErrors.length + entUpdateUserErrors.length + entUpdateWireErrors.length;
         }
@@ -334,9 +336,9 @@ export class DseConnector {
                 } else {
                     logger.warn(`Some entitlement updates failed for the account [${userId}]`);
                 }
-                entUpdateErrors.forEach((error) => logger.warn( { cause: error }, 'Entitlement update failed.'));
-                entUpdateUserErrors.forEach((error) => logger.warn( { cause: error }, 'Entitlement update failed.'));
-                entUpdateWireErrors.forEach((error) => logger.warn( { cause: error }, 'Entitlement update failed.'));
+                entUpdateErrors.forEach((error) => logger.warn({ cause: error }, 'Entitlement update failed.'));
+                entUpdateUserErrors.forEach((error) => logger.warn({ cause: error }, 'Entitlement update failed.'));
+                entUpdateWireErrors.forEach((error) => logger.warn({ cause: error }, 'Entitlement update failed.'));
             }
 
             // send back a new user
@@ -364,8 +366,8 @@ export class DseConnector {
         await this.docuSign.dsClient.refreshAccessToken();
 
         const userId = plan.identity;
-        const entitlementsUpdates = plan.changes.filter((item) => (item.attribute == 'group' && (item.op == 'Add' || item.op == 'Remove')));
-        const attrUpdates = plan.changes.filter((item) => (item.attribute != 'group'));
+        const entitlementsUpdates = plan.changes.filter((item) => (item.attribute == this.groupAttr));
+        const attrUpdates = plan.changes.filter((item) => (item.attribute != this.groupAttr));
 
         // Entitlement updates
         let entUpdateErrors: any[] = [];
@@ -424,40 +426,52 @@ export class DseConnector {
         if (entitlementsUpdates.length > 0 && attrUpdates.length == 0) { // if request only for entitlement updates
             if (numOfEntUpdateErrors == entitlementsUpdates.length) {
                 throw new ConnectorError(`All entitlement updates to the account [${userId}] are failed.`);
-            } else if (numOfEntUpdateErrors < entitlementsUpdates.length) {
+            } else if (numOfEntUpdateErrors > 0 && numOfEntUpdateErrors < entitlementsUpdates.length) {
                 logger.warn(`Some entitlement updates failed for the account [${userId}]`);
+                entUpdateErrors.forEach((error) => logger.warn({ cause: error }, 'Entitlement update failed.'));
+                entUpdateUserErrors.forEach((error) => logger.warn({ cause: error }, 'Entitlement update failed.'));
+                entUpdateWireErrors.forEach((error) => logger.warn({ cause: error }, 'Entitlement update failed.'));
             }
 
-            // write to a response stream
             res.send(await this.userAccountRead(userId) as StdAccountUpdateOutput);
         } else if (entitlementsUpdates.length == 0 && attrUpdates.length > 0) { // if request only for attribute updates
             if (numOfAttrUpdateErrors > 0) {
                 logger.error(`Attribute updates to the account [${userId}] are failed.`);
-
                 this.convertToConnectorError(attrUpdateRes);
             }
 
-            // write to a response stream
             res.send(await this.userAccountRead(userId) as StdAccountUpdateOutput);
         } else if (entitlementsUpdates.length > 0 && attrUpdates.length > 0) { // if mixed request
-            if (numOfAttrUpdateErrors == 0 && numOfEntUpdateErrors > 0) {
+            if (numOfAttrUpdateErrors == 0 && numOfEntUpdateErrors == 0) {
+                res.send(await this.userAccountRead(userId) as StdAccountUpdateOutput);
+            } else if (numOfAttrUpdateErrors == 0 && numOfEntUpdateErrors > 0) {
                 logger.warn(`Entitlement updates to the account [${userId}] are failed.`);
+                entUpdateErrors.forEach((error) => logger.warn({ cause: error }, 'Entitlement update failed.'));
+                entUpdateUserErrors.forEach((error) => logger.warn({ cause: error }, 'Entitlement update failed.'));
+                entUpdateWireErrors.forEach((error) => logger.warn({ cause: error }, 'Entitlement update failed.'));
 
                 res.send(await this.userAccountRead(userId) as StdAccountUpdateOutput);
             } else if (numOfAttrUpdateErrors > 0 && numOfEntUpdateErrors == 0) {
                 logger.warn(`Attribute updates to the account [${userId}] are failed.`);
+                logger.warn(attrUpdateRes);
 
                 res.send(await this.userAccountRead(userId) as StdAccountUpdateOutput);
             } else if (numOfAttrUpdateErrors > 0 && numOfEntUpdateErrors > 0) {
                 if (numOfEntUpdateErrors == entitlementsUpdates.length && numOfAttrUpdateErrors == 1) {
+                    entUpdateErrors.forEach((error) => logger.error({ cause: error }, 'Entitlement update failed.'));
+                    entUpdateUserErrors.forEach((error) => logger.error({ cause: error }, 'Entitlement update failed.'));
+                    entUpdateWireErrors.forEach((error) => logger.error({ cause: error }, 'Entitlement update failed.'));
+                    logger.error(attrUpdateRes);
+
                     throw new ConnectorError(`All updates to the account [${userId}] are failed.`);
                 }
 
                 logger.warn(`Some updates to the account [${userId}] are failed.`);
+                entUpdateErrors.forEach((error) => logger.warn({ cause: error }, 'Entitlement update failed.'));
+                entUpdateUserErrors.forEach((error) => logger.warn({ cause: error }, 'Entitlement update failed.'));
+                entUpdateWireErrors.forEach((error) => logger.warn({ cause: error }, 'Entitlement update failed.'));
+                logger.warn(attrUpdateRes);
 
-                res.send(await this.userAccountRead(userId) as StdAccountUpdateOutput);
-            } else if (numOfAttrUpdateErrors == 0 && numOfEntUpdateErrors == 0) {
-                // full success
                 res.send(await this.userAccountRead(userId) as StdAccountUpdateOutput);
             }
         }
