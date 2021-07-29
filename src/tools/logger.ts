@@ -20,7 +20,9 @@ export const logger = pino ({
     redact: {
         paths: [
             'cause.response.request._header.authorization',
-            'response.request._header.authorization'
+            'response.request._header.authorization',
+            'cause.response.request._data.refresh_token',
+            'response.request._data.refresh_token'
         ],
         censor: '****'
     }

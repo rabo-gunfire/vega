@@ -76,8 +76,7 @@ export const stdTestConnectionHandler: StdTestConnectionHandler = async (
         await dseConnector.testConnection(res);
     } catch (error) {
         if (error instanceof ConnectorError) {
-            logger.error('Test connection failed.');
-            logger.error(error);
+            logger.error(error, 'Test connection failed.');
 
             throw error;
         } else {
@@ -106,8 +105,7 @@ export const stdAccountReadHandler: StdAccountReadHandler = async (
         await dseConnector.readAccount(input, res);
     } catch (error) {
         if (error instanceof ConnectorError) {
-            logger.error('Read account failed.');
-            logger.error(error);
+            logger.error(error, 'Read account failed.');
 
             throw error;
         } else {
@@ -136,8 +134,7 @@ export const stdAccountListHandler: StdAccountListHandler = async (
         await dseConnector.listAccounts(res);
     } catch (error) {
         if (error instanceof ConnectorError) {
-            logger.error('Account aggregation failed.');
-            logger.error(error);
+            logger.error(error, 'Account aggregation failed.');
 
             throw error;
         } else {
@@ -184,8 +181,7 @@ export const stdEntitlementListHandler: StdEntitlementListHandler = async (
         await dseConnector.listEntitlements(res);
     } catch (error) {
         if (error instanceof ConnectorError) {
-            logger.error('Group aggregation failed.');
-            logger.error(error);
+            logger.error(error, 'Group aggregation failed.');
 
             throw error;
         } else {
@@ -210,12 +206,13 @@ export const stdAccountCreateHandler: StdAccountCreateHandler = async (
     input: StdAccountCreateInput,
     res: Response<StdAccountCreateOutput>): Promise<void> => {
 
+    logger.info(input, 'Account creation plan.');
+
     try {
         await dseConnector.crateAccount(input, res);
     } catch (error) {
         if (error instanceof ConnectorError) {
-            logger.error('Account creation failed.');
-            logger.error(error);
+            logger.error(error, 'Account creation failed.');
 
             throw error;
         } else {
@@ -240,12 +237,13 @@ export const stdAccountUpdateHandler: StdAccountUpdateHandler = async (
     input: StdAccountUpdateInput,
     res: Response<StdAccountUpdateOutput>): Promise<void> => {
 
+    logger.info(input, 'Account update plan.');
+
     try {
         await dseConnector.updateAccount(input, res);
     } catch (error) {
         if (error instanceof ConnectorError) {
-            logger.error('Account updates failed.');
-            logger.error(error);
+            logger.error(error, 'Account updates failed.');
 
             throw error;
         } else {
@@ -270,12 +268,13 @@ export const stdAccountDeleteHandler: StdAccountDeleteHandler = async (
     input: StdAccountDeleteInput,
     res: Response<StdAccountDeleteOutput>): Promise<void> => {
 
+    logger.info(input, 'Account delete plan.');
+
     try {
         await dseConnector.deleteAccount(input, res);
     } catch (error) {
         if (error instanceof ConnectorError) {
-            logger.error('Account delete failed.');
-            logger.error(error);
+            logger.error(error, 'Account delete failed.');
 
             throw error;
         } else {
