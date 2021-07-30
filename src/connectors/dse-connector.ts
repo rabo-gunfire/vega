@@ -164,7 +164,7 @@ export class DseConnector {
             // Write user records to response stream
             result.users?.map(async (user: UserInformation) => {
                 res.send({
-                    identity: user.userName,
+                    identity: user.userId,
                     uuid: user.userId,
                     attributes: {
                         userName: user.userName,
@@ -243,7 +243,7 @@ export class DseConnector {
             // write each entitlement to the response stream
             result.groups?.map(async (group: Group) => {
                 res.send({
-                    identity: group.groupName,
+                    identity: group.groupId,
                     uuid: group.groupId,
                     attributes: {
                         groupId: group.groupId,
@@ -531,7 +531,7 @@ export class DseConnector {
 
         result = result as UserInformation;
         const userAccount = {
-            identity: result.userName,
+            identity: result.userId,
             uuid: result.userId,
             attributes: {
                 userName: result.userName,
