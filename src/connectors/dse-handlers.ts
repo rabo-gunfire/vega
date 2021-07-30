@@ -38,7 +38,7 @@ import { DseConfig } from './dse-config';
  *
  * @param {DseConfig} config - Source configuration to validate
  */
-const validateConfig = (config: any): DseConfig => {
+const validateConfig = (config: DseConfig): DseConfig => {
     if (!config?.apiUrl) {
         throw new InvalidConfigurationError(`'apiUrl' is required`);
     } else if (!config?.oauthServerUrl) {
