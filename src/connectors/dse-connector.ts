@@ -28,6 +28,7 @@ import { InvalidRequestError } from './invalid-request-error';
 import { InvalidResponseError } from './invalid-response-error';
 import { DseConfig } from './dse-config';
 import { logger } from '../tools/logger';
+import { convertToConnectorError } from '../tools/error-converter';
 
 /**
  * DocuSign eSignature connector 
@@ -68,7 +69,7 @@ export class DseConnector {
         try {
             result = await this.docuSign.dsClient.getTokenUserInfo();
         } catch (error) {
-            this.convertToConnectorError(error);
+            convertToConnectorError(error);
         }
 
         if (!result) {
@@ -80,7 +81,7 @@ export class DseConnector {
         try {
             user = await this.docuSign.getUser(this.accountId, result.sub);
         } catch (error) {
-            this.convertToConnectorError(error);
+            convertToConnectorError(error);
         }
 
         if (!user) {
@@ -143,7 +144,7 @@ export class DseConnector {
             try {
                 result = await this.docuSign.listUsers(this.accountId, opts);
             } catch (error) {
-                this.convertToConnectorError(error);
+                convertToConnectorError(error);
             }
 
             if (!result) {
@@ -222,7 +223,7 @@ export class DseConnector {
             try {
                 result = await this.docuSign.listEntitlements(this.accountId, opts);
             } catch (error) {
-                this.convertToConnectorError(error);
+                convertToConnectorError(error);
             }
 
             if (!result) {
@@ -265,12 +266,11 @@ export class DseConnector {
      */
     async crateAccount(input: StdAccountCreateInput,
         res: Response<StdAccountCreateOutput>): Promise<void> {
-        if (!input.identity) {
-            throw new InvalidRequestError('Username cannot be empty.');
-        }
+
+        // Ignore input.identity, it is empty for this connector
 
         // Lets separate entitlement and attribute updates
-        const userAttrs: any = { userName: input.identity };
+        const userAttrs: any = {};
         let entitlements: string[] = [];
         for (const key in input.attributes) {
             if (key == this.groupAttr) {
@@ -295,11 +295,15 @@ export class DseConnector {
         try {
             result = await this.docuSign.createUser(this.accountId, { newUsersDefinition: { newUsers: users } });
         } catch (error) {
-            this.convertToConnectorError(error);
+            convertToConnectorError(error);
         }
 
         if (!result) {
             throw new InvalidResponseError('Found empty response for user creation.');
+        }
+
+        if (result.newUsers && result.newUsers.length > 0 && result.newUsers[0].errorDetails) {
+            throw new InvalidRequestError(result.newUsers[0].errorDetails.errorCode + ' - ' + result.newUsers[0].errorDetails.message)
         }
 
         let userId = '';
@@ -416,7 +420,6 @@ export class DseConnector {
                     .catch((error) => error);
 
             if (attrUpdateRes instanceof Error ||
-                (attrUpdateRes.users?.length && attrUpdateRes.users[0].errorDetails) ||
                 (attrUpdateRes.code && attrUpdateRes.errno)) {
                 numOfAttrUpdateErrors++;
             }
@@ -437,7 +440,7 @@ export class DseConnector {
         } else if (entitlementsUpdates.length == 0 && attrUpdates.length > 0) { // if request only for attribute updates
             if (numOfAttrUpdateErrors > 0) {
                 logger.error(`Attribute updates to the account [${userId}] are failed.`);
-                this.convertToConnectorError(attrUpdateRes);
+                convertToConnectorError(attrUpdateRes);
             }
 
             res.send(await this.userAccountRead(userId) as StdAccountUpdateOutput);
@@ -499,7 +502,7 @@ export class DseConnector {
         try {
             result = await this.docuSign.deleteUser(this.accountId, { userInfoList: { users: [{ userId: input.identity }] } });
         } catch (error) {
-            this.convertToConnectorError(error);
+            convertToConnectorError(error);
         }
 
         if (!result) {
@@ -522,7 +525,7 @@ export class DseConnector {
         try {
             result = await this.docuSign.getUser(this.accountId, userId);
         } catch (error) {
-            this.convertToConnectorError(error);
+            convertToConnectorError(error);
         }
 
         if (!result) {
@@ -558,37 +561,5 @@ export class DseConnector {
         } as StdAccountReadOutput;
 
         return userAccount;
-    }
-
-    /**
-     * Convert error to an appropriate ConnectorError.
-     *
-     * @param {Error | any} err - An error object.
-     */
-    private convertToConnectorError(err: Error | any): void {
-        if (err instanceof Error) { // http errors
-            const e = err as ResponseError;
-            if (e.status) {
-                if (e.status == 400) {
-                    throw new InvalidRequestError(`${e.status} ${e.message}`, e);
-                } if (e.status == 401) {
-                    throw new InvalidConfigurationError(`${e.status} ${e.message}`, e);
-                } else if (e.status == 403) {
-                    throw new InsufficientPermissionError(`${e.status} ${e.message}`, e);
-                } else if (e.status == 404) {
-                    throw new InvalidRequestError(`${e.status} ${e.message}`, e);
-                } else {
-                    throw new ConnectorError(`${e.status} ${e.message}`, e);
-                }
-            } else {
-                throw new ConnectorError(`${e.message}`, e);
-            }
-        } else if (err.code) {  // wire errors
-            if (err.code === 'ENOTFOUND') {
-                throw new InvalidConfigurationError(`Unknown host. message: ${err.message} , errno: ${err.errno} , code: ${err.code}`, err);
-            }
-        } else {
-            throw new ConnectorError(err);
-        }
     }
 }
