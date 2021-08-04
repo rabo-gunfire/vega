@@ -38,18 +38,18 @@ import { DseConfig } from './dse-config';
  *
  * @param {DseConfig} config - Source configuration to validate
  */
-const validateConfig = (config: DseConfig): DseConfig => {
-    if (!config?.apiUrl) {
+export const validateConfig = (config: DseConfig): DseConfig => {
+    if (!config.apiUrl) {
         throw new InvalidConfigurationError(`'apiUrl' is required`);
-    } else if (!config?.oauthServerUrl) {
+    } else if (!config.oauthServerUrl) {
         throw new InvalidConfigurationError(`'oauthServerUrl' is required`);
-    } else if (!config?.accountId) {
+    } else if (!config.accountId) {
         throw new InvalidConfigurationError(`'accountId' is required`);
-    } else if (!config?.clientId) {
+    } else if (!config.clientId) {
         throw new InvalidConfigurationError(`'clientId' is required`);
-    } else if (!config?.clientSecret) {
+    } else if (!config.clientSecret) {
         throw new InvalidConfigurationError(`'clientSecret' is required`);
-    } else if (!config?.refreshToken) {
+    } else if (!config.refreshToken) {
         throw new InvalidConfigurationError(`'refreshToken' is required`);
     }
 
@@ -285,3 +285,4 @@ export const stdAccountDeleteHandler: StdAccountDeleteHandler = async (
         }
     }
 };
+

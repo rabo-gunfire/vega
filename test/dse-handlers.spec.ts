@@ -8,6 +8,7 @@ import {
     StdAccountCreateInput,
     StdAccountDeleteInput,
     StdAccountReadInput,
+    StdAccountUpdateInput,
     StdAccountUpdateOutput
 } from '@sailpoint/connector-sdk';
 
@@ -16,20 +17,22 @@ import { PassThrough } from 'stream';
 
 // initialize app configuration context
 const context: Context = {
-    config: {
-        apiUrl: 'https://demo.docusign.net',
-        oauthServerUrl: 'https://account-d.docusign.com',
-        accountId: '14072015',
-        clientId: 'df45eb70-ba0f-4106-9e0f-ce83fdb4d4a9',
-        clientSecret: '403ab462-76b8-4037-af7b-094eec3bd338',
-        refreshToken: 'eyJ0eXAiOiJNVCIsImFsZyI6IlJTMjU2Iiwia2lkIjoiNjgxODVmZjEtNGU1MS00Y2U5LWFmMWMtNjg5ODEyMjAzMzE3In0.AQoAAAABAAgABwCA5oP4OzbZSAgAgGbo8M5N2UgCAGPeujRj2BJNpA1azVoR_tAVAAEAAAAYAAEAAAAFAAAADQAkAAAAZGY0NWViNzAtYmEwZi00MTA2LTllMGYtY2U4M2ZkYjRkNGE5IgAkAAAAZGY0NWViNzAtYmEwZi00MTA2LTllMGYtY2U4M2ZkYjRkNGE5MAAAFhgbsizZSDcAJrckfLbkskWwVEu_I6YOXQ.BIvZBgvAXLdM7dhbSCZxUMgQKBP5n60m7z39HPb0pWPTry5cUaPQr5yMzQdBzkebFhuCcLmGHJl-5S-kz8vpmwsE_1JCPOxU-j2TDWYtsoqnmSYKhA_t2CXGWOr84ac1_ZpgWtL5QVzUfK8ypW-NB8yVkAS3y3whQ22hk9noe-i6OhF1pPYV20p37ezK-_K5ITLBA4CH8TJR4XvXWTbzJvRXwaJPbaW70mQf2df_Yk_7iFhy3gbfq-w-jwk9wV4c3qOi1semgflQR8vARyaE_NGT7FJJA0oow_kAQbXheR39ALoQEPfFdGwkwK9wXg326Fc1kUrZlKtOqQOvfSU2pw'
-    },
-    id: "eyJ0eXAiOiJNVCIs-101",
+    id: "54bcaba7-5698-4471-a1b0-26274d4af74b",
     name: "DocuSign eSignature",
     version: 1.0
 }
 
-process.env.CONNECTOR_CONFIG = Buffer.from(JSON.stringify(context.config), 'utf-8').toString('base64');
+// source configuration
+const config = {
+    apiUrl: 'https://demo.docusign.net',
+    oauthServerUrl: 'https://account-d.docusign.com',
+    accountId: '14072015',
+    clientId: 'df45eb70-ba0f-4106-9e0f-ce83fdb4d4a9',
+    clientSecret: '403ab462-76b8-4037-af7b-094eec3bd338',
+    refreshToken: 'eyJ0eXAiOiJNVCIsImFsZyI6IlJTMjU2Iiwia2lkIjoiNjgxODVmZjEtNGU1MS00Y2U5LWFmMWMtNjg5ODEyMjAzMzE3In0.AQoAAAABAAgABwAAgHl7VlfZSAgAAADec-lu2UgCAGPeujRj2BJNpA1azVoR_tAVAAEAAAAYAAEAAAAFAAAADQAkAAAAZGY0NWViNzAtYmEwZi00MTA2LTllMGYtY2U4M2ZkYjRkNGE5IgAkAAAAZGY0NWViNzAtYmEwZi00MTA2LTllMGYtY2U4M2ZkYjRkNGE5MACAvK95VlfZSDcAJrckfLbkskWwVEu_I6YOXQ.kRShKeu9KP4lqvOBY6wbgy6T5P8yadLEUdNjFJk8Vtoh9j3w_2xHRYJWfeya0-9YSeZndTmkvYh5Bvz_LtVxDdlx_cv1bUCJwMgUp-KUaIhmLRFcENfuxL1TW5WVjdxwDLDs6hoQKsdMm5btAjKgJrHJx2tGIMc5SEfUEl2RjAZ7DtpC76ued0mTHK2tBSyOBvZuefHnUYbtBOo8I1HZA893UKPnUr9h0tkzgg-mHYBy1GdQlKKGplVJIWSgzdS1xJr92evxkN6VRhA4QIcXp8FDebsy5B2iv5odsI4jPatQQ8DpOvi80vWDGqfuve3xzt_fAFPf1YeFWsvPNeuX3Q'
+}
+
+process.env.CONNECTOR_CONFIG = Buffer.from(JSON.stringify(config), 'utf-8').toString('base64');
 
 import { connector } from '../src/index';
 
@@ -154,14 +157,14 @@ describe("test connection", () => {
 //     });
 
 //     let plan = {
-//         identity: 'test4.fakeuser',
+//         identity: 'fake-6.user',
 //         attributes: {
-//             firstName: 'test4',
-//             lastName: 'fakeuser',
+//             firstName: 'fake-6',
+//             lastName: 'user',
 //             jobTitle: 'SOE',
-//             email: 'test4@fakemail.com',
+//             email: 'fake-6.user@fakemail.com',
 //             company: 'Acme',
-//             group: ['8275323', '8267667']
+//             groups: ['8275323', '8267667']
 //         }
 //     } as StdAccountCreateInput;
 
@@ -187,25 +190,25 @@ describe("test connection", () => {
 //     });
 
 //     const plan = {
-//         identity: '542892d7-4033-4563-90a0-c462c10eddcb',
+//         identity: '63f54b3f-f437-4722-9947-1452dd3009a4',
 //         changes: [
 //             {
 //                 op: 'Add',
-//                 attribute: 'email',
-//                 value: 'test33@fakemail.com'
+//                 attribute: 'groups',
+//                 value: '8275323'
 //             },
 //             {
 //                 op: 'Add',
 //                 attribute: 'jobTitle',
-//                 value: 'SOEEE'
+//                 value: 'PSEX'
 //             },
 //             {
 //                 op: 'Add',
-//                 attribute: 'userName',
-//                 value: 'test33.fakeuser'
-//             },
+//                 attribute: 'company',
+//                 value: 'FOOX'
+//             }
 //         ]
-//     } as StdAccountUpdateOutput;
+//     } as StdAccountUpdateInput;
 
 //     test("[0] update account attributes", async () => {
 //         await connector._exec(

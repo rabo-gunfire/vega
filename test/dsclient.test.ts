@@ -2,10 +2,17 @@
 
 import * as dsclient from "../src/docusign/dsclient";
 
+//////////////////////////////////////////////////////////////////////
+//
+// ApiClient MOCKS
+//
+//////////////////////////////////////////////////////////////////////
+
 /* Mock docusign-esign ApiClient */
 jest.mock("docusign-esign/src/ApiClient", () => {
     return jest.fn().mockImplementation(() => ({
         ...jest.requireActual("docusign-esign/src/ApiClient"),
+
         getUserInfo: jest.fn().mockImplementation(() => {
             return {
                 sub: "34bade63-d863-4d12-a40d-5acd5a11fed0",
@@ -33,13 +40,36 @@ jest.mock("docusign-esign/src/ApiClient", () => {
                 created: "2021-06-10T09:02:33.19"
             };
         }),
+
         addDefaultHeader: jest.fn().mockImplementation()
     }));
 });
 
+//////////////////////////////////////////////////////////////////////
+//
+// SUPERAGENT MOCKS
+//
+//////////////////////////////////////////////////////////////////////
+
 const Request = require('../src/docusign/__mocks__/superagent.js');
 
-/* tests */
+//////////////////////////////////////////////////////////////////////
+//
+// TESTS
+//
+//////////////////////////////////////////////////////////////////////
+
+describe("dsClient", () => {
+    let inst: dsclient.DocuSignClient;
+    beforeEach(() => {
+        inst = new dsclient.DocuSignClient("https://fakeapi.acme.org/restapi", "https://fakeorg-d.org", "b'nXQpVsglEGFJgfK'", "S3cRet", "access");
+    })
+
+    test("[1] ds api client to be defined", async () => {
+        expect(inst.dsApiClient).toBeDefined();
+    });
+});
+
 describe("getTokenUserInfo", () => {
     let inst: dsclient.DocuSignClient;
 
@@ -47,8 +77,8 @@ describe("getTokenUserInfo", () => {
         inst = new dsclient.DocuSignClient("https://fakeapi.acme.org/restapi", "https://fakeorg-d.org", "b'nXQpVsglEGFJgfK'", "S3cRet", "access");
     })
 
-    test("[0] user info", () => {
-        let result: any = inst.getTokenUserInfo();
+    test("[0] user info", async () => {
+        let result: any = await inst.getTokenUserInfo();
         expect(result.sub).toStrictEqual("34bade63-d863-4d12-a40d-5acd5a11fed0");
     })
 });
@@ -68,7 +98,7 @@ describe("refreshAccessToken", () => {
                 access_token: "eyJ0eXAiOiJNVCIsImFsZyI6IlJTMjU2Iiwia2lkIjoiNjgxODVmZjEtNGU1MS00Y2U5LWFmMWMtNjg5ODEyMjAzMzE3In0.AQoAAAABAAUABwCA29axPUzZSAgAgBv6v4BM2UgCAGPeujRj2BJNpA1azVoR_tAVAAEAAAAYAAEAAAAFAAAADQAkAAAAZGY0NWViNzAtYmEwZi00MTA2LTllMGYtY2U4M2ZkYjRkNGE5IgAkAAAAZGY0NWViNzAtYmEwZi00MTA2LTllMGYtY2U4M2ZkYjRkNGE5MAAAFhgbsizZSDcAJrckfLbkskWwVEu_I6YOXQ.We_MUVqllChw-jXzFAP6T_wHLYB4dBFyRPkfDGQ5Pc48fwSnrdnmWYclbQgkXdQ7tszNVBWcNRFGMcuSemUbi68Z2YI3-RW0tF77u1pQSiBb6WtRiMIx9GzhiKZ45rQp6GBbSYmmV0ihgWGyXMOxfFLxoWj-MH53hqNXMkNUXatDBODZku09S320VjXXCzwJ4s4JUfg9_-uEYNH_EFAX7Gee2lHfX8sNG6iltFTJuQ40i83gOpUXN8i4gME0gdViN0OMOW3NXVeNKQyaa4J6bfE3k1A0LnGUIFYWrC5KsLfcSH9uA-1vNH3tHxO9XZWbj6jpEuRpXan0U7y2XEhflQ",
                 token_type: "Bearer",
                 refresh_token: "eyJ0eXAiOiJNVCIsImFsZyI6IlJTMjU2Iiwia2lkIjoiNjgxODVmZjEtNGU1MS00Y2U5LWFmMWMtNjg5ODEyMjAzMzE3In0.AQoAAAABAAgABwCA29axPUzZSAgAgFs7qtBj2UgCAGPeujRj2BJNpA1azVoR_tAVAAEAAAAYAAEAAAAFAAAADQAkAAAAZGY0NWViNzAtYmEwZi00MTA2LTllMGYtY2U4M2ZkYjRkNGE5IgAkAAAAZGY0NWViNzAtYmEwZi00MTA2LTllMGYtY2U4M2ZkYjRkNGE5MAAAFhgbsizZSDcAJrckfLbkskWwVEu_I6YOXQ.NT_2gCtUUEDCxJUNvcS8WNYWYuYGwyme9WzvBLjXRUFWYT6AHV_9XYENPtPhzVV3NDz85ZF1wXFTOtUfrPKEgrZHuKLfJ0CxXnNdgm1M1I-EQz8k-ORWu65AJTgGSXepLXVjiNf5Cr-4UXn70ZnqOsa8g_1l70kfAa7og1j50gLAZawuRo-2bjufv42d5AqV756u4ac0rOVlBsDB6XeWfcw1ZBwUdbsh2ZzafCMY6xIOv_92_VyR8qU6_otnxCd6cO6XGc8OfoVDzW8kPP3woZpaN6VA7TcRFH5fkAlTnf1k3nfTI6mwAVjl-ehA4y1H4b_OqOyzH1ewmzzFG64dZw",
-                expires_in: 28800,
+                expires_in: 28800
             }
         });
 
