@@ -1,7 +1,11 @@
 /* Copyright (C) 2021 SailPoint Technologies, Inc.  All rights reserved. */
 
-import { Group, GroupInformation, UserInformation, UserInformationList } from 'docusign-esign';
-import { ResponseError } from 'superagent';
+import {
+    Group,
+    GroupInformation,
+    UserInformation,
+    UserInformationList
+} from 'docusign-esign';
 
 import {
     AttributeChange,
@@ -21,8 +25,6 @@ import {
 
 import { DocuSignClient } from '../docusign/dsclient';
 import { DocuSign } from '../docusign/docusign';
-import { InvalidConfigurationError } from './invalid-configuration-error';
-import { InsufficientPermissionError } from './insufficient-permission-error';
 import { ConnectorError } from './connector-error';
 import { InvalidRequestError } from './invalid-request-error';
 import { InvalidResponseError } from './invalid-response-error';
@@ -303,7 +305,7 @@ export class DseConnector {
         }
 
         if (result.newUsers && result.newUsers.length > 0 && result.newUsers[0].errorDetails) {
-            throw new InvalidRequestError(result.newUsers[0].errorDetails.errorCode + ' - ' + result.newUsers[0].errorDetails.message)
+            throw new InvalidRequestError(result.newUsers[0].errorDetails.errorCode + ' - ' + result.newUsers[0].errorDetails.message);
         }
 
         let userId = '';
