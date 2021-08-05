@@ -1,7 +1,7 @@
 {
   "name": "saas-conn-docusign-esignature",
   "description": "SaaS Connectivity 2.0 platform based connector for DocuSign eSignature application.",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "author": "SailPoint Technologies, Inc.",
   "license": "Copyright (c) 2021. SailPoint Technologies, Inc. All rights reserved.",
   "main": "./dist/index.js",
@@ -41,7 +41,7 @@
     "@types/superagent": "^4.1.11",
     "@typescript-eslint/eslint-plugin": "^4.28.3",
     "@typescript-eslint/parser": "^4.28.3",
-    "@vercel/ncc": "^0.28.6",
+    "@vercel/ncc": "^0.29.0",
     "eslint": "^7.30.0",
     "jest": "^27.0.4",
     "prettier": "^2.3.2",
