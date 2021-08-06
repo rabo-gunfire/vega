@@ -91,7 +91,7 @@ export class DseConnector {
         }
 
         // success
-        res.send({});
+        res.send({} as StdTestConnectionOutput);
     }
 
     /**
@@ -266,7 +266,7 @@ export class DseConnector {
      * @param {StdAccountCreateInput} input - New user definition.
      * @param {Response<StdAccountCreateOutput>} res - stream to write a response.
      */
-    async crateAccount(input: StdAccountCreateInput,
+    async createAccount(input: StdAccountCreateInput,
         res: Response<StdAccountCreateOutput>): Promise<void> {
 
         // Ignore input.identity, it is empty for this connector
@@ -512,7 +512,7 @@ export class DseConnector {
         }
 
         // Add empty response to convey success
-        res.send({});
+        res.send({} as StdAccountDeleteOutput);
     }
 
     /**

@@ -640,21 +640,21 @@ describe("createAccount", () => {
 
     test("[0] create account success", async () => {
         let outStream = new PassThrough({ objectMode: true });
-        await inst.crateAccount(accountInput, new ResponseStream<any>(outStream));
+        await inst.createAccount(accountInput, new ResponseStream<any>(outStream));
 
         outStream.on('data', (chunk: StdAccountCreateOutput) => expect(chunk.identity).toStrictEqual('45bade63-d863-4d12-a40d-5acd5a11fet7'));
     });
 
     test("[1] create account with request entitlement success", async () => {
         let outStream = new PassThrough({ objectMode: true });
-        await inst.crateAccount(accountEntInput, new ResponseStream<any>(outStream));
+        await inst.createAccount(accountEntInput, new ResponseStream<any>(outStream));
 
         outStream.on('data', (chunk: StdAccountCreateOutput) => expect(chunk.attributes.groups[0]).toStrictEqual('8275323'));
     });
 
     test("[2] create account with request entitlement[array] success", async () => {
         let outStream = new PassThrough({ objectMode: true });
-        await inst.crateAccount(accountEntInputArray, new ResponseStream<any>(outStream));
+        await inst.createAccount(accountEntInputArray, new ResponseStream<any>(outStream));
 
         outStream.on('data', (chunk: StdAccountCreateOutput) => expect(chunk.attributes.groups[0]).toStrictEqual('8275323'));
     });
@@ -662,7 +662,7 @@ describe("createAccount", () => {
     test("[3] empty response for account create", () => {
         __setMockUserCreateResponse(Promise.resolve(userCreateMockResUndefined));
 
-        expect(inst.crateAccount(accountInput, new ResponseStream<any>(new PassThrough({ objectMode: true }))))
+        expect(inst.createAccount(accountInput, new ResponseStream<any>(new PassThrough({ objectMode: true }))))
             .rejects
             .toThrowError('Found empty response for user creation.');
     });
@@ -670,7 +670,7 @@ describe("createAccount", () => {
     test("[4] exception in account create", () => {
         __setMockUserCreateResponse(Promise.reject(unauthorizedError));
 
-        expect(inst.crateAccount(accountInput, new ResponseStream<any>(new PassThrough({ objectMode: true }))))
+        expect(inst.createAccount(accountInput, new ResponseStream<any>(new PassThrough({ objectMode: true }))))
             .rejects
             .toThrowError("401 Unauthorized");
     });
@@ -678,7 +678,7 @@ describe("createAccount", () => {
     test("[5] exception when no userId in create account response", () => {
         __setMockUserCreateResponse(Promise.resolve({ newUsers: [{ userName: "Abel Tuter", userId: "" }] } as NewUsersSummary));
 
-        expect(inst.crateAccount(accountInput, new ResponseStream<any>(new PassThrough({ objectMode: true }))))
+        expect(inst.createAccount(accountInput, new ResponseStream<any>(new PassThrough({ objectMode: true }))))
             .rejects
             .toThrowError("User creation failed.");
     });
@@ -686,7 +686,7 @@ describe("createAccount", () => {
     test("[6] exception when userName is not provided", () => {
         __setMockUserCreateResponse(Promise.resolve(userCreateMockResInvalidUserError));
 
-        expect(inst.crateAccount(accountInputNoUsername, new ResponseStream<any>(new PassThrough({ objectMode: true }))))
+        expect(inst.createAccount(accountInputNoUsername, new ResponseStream<any>(new PassThrough({ objectMode: true }))))
             .rejects
             .toThrowError("INVALID_USERNAME - Username is missing");
     });
@@ -695,7 +695,7 @@ describe("createAccount", () => {
         __setMockEntReqResponse(Promise.resolve(entRequestMockResInvalidUser))
 
         let outStream = new PassThrough({ objectMode: true });
-        await inst.crateAccount(accountEntInput, new ResponseStream<any>(outStream));
+        await inst.createAccount(accountEntInput, new ResponseStream<any>(outStream));
 
         outStream.on('data', (chunk: StdAccountCreateOutput) => expect(chunk.identity).toStrictEqual('45bade63-d863-4d12-a40d-5acd5a11fet7'));
     });
@@ -704,7 +704,7 @@ describe("createAccount", () => {
         __setMockEntReqResponse(Promise.resolve(entRequestMockResWireError))
 
         let outStream = new PassThrough({ objectMode: true });
-        await inst.crateAccount(accountEntInput, new ResponseStream<any>(outStream));
+        await inst.createAccount(accountEntInput, new ResponseStream<any>(outStream));
 
         outStream.on('data', (chunk: StdAccountCreateOutput) => expect(chunk.identity).toStrictEqual('45bade63-d863-4d12-a40d-5acd5a11fet7'));
     });
@@ -713,7 +713,7 @@ describe("createAccount", () => {
         __setMockEntReqResponse(Promise.resolve(unauthorizedError))
 
         let outStream = new PassThrough({ objectMode: true });
-        await inst.crateAccount(accountEntInput, new ResponseStream<any>(outStream));
+        await inst.createAccount(accountEntInput, new ResponseStream<any>(outStream));
 
         outStream.on('data', (chunk: StdAccountCreateOutput) => expect(chunk.identity).toStrictEqual('45bade63-d863-4d12-a40d-5acd5a11fet7'));
     });
@@ -722,7 +722,7 @@ describe("createAccount", () => {
         __setMockEntReqResponse2(Promise.resolve(unauthorizedError))
 
         let outStream = new PassThrough({ objectMode: true });
-        await inst.crateAccount(accountEntInputArray, new ResponseStream<any>(outStream));
+        await inst.createAccount(accountEntInputArray, new ResponseStream<any>(outStream));
 
         outStream.on('data', (chunk: StdAccountCreateOutput) => expect(chunk.identity).toStrictEqual('45bade63-d863-4d12-a40d-5acd5a11fet7'));
     });
