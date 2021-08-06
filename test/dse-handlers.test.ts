@@ -73,7 +73,7 @@ jest.mock("../src/connectors/dse-connector", () => {
                 }).mockImplementationOnce(() => {
                     operationFailsWithOtherError();
                 }),
-                crateAccount: jest.fn().mockImplementationOnce(() => {
+                createAccount: jest.fn().mockImplementationOnce(() => {
                     operationSuccess();
                 }).mockImplementationOnce(() => {
                     operationFailsWithConnectorError();

@@ -35,3 +35,18 @@ npm run pack-zip
 ```
 
 The command generates a zip artifact in the `dist` directory.
+
+## Dev Aid
+
+#### Unit Tests
+Issue the following command to execute all tests:
+
+```
+npm run test
+```
+#### Integration Tests
+Issue the following command to execute all tests:
+
+```
+npm run spec
+```

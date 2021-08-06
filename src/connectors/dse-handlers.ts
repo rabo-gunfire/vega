@@ -209,7 +209,7 @@ export const stdAccountCreateHandler: StdAccountCreateHandler = async (
     logger.info(input, 'Account creation plan.');
 
     try {
-        await dseConnector.crateAccount(input, res);
+        await dseConnector.createAccount(input, res);
     } catch (error) {
         if (error instanceof ConnectorError) {
             logger.error(error, 'Account creation failed.');
