@@ -1,0 +1,31 @@
+name: PRB
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  saas-conn-docusign-esignature:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+
+    strategy:
+      matrix:
+        node-version: [ '16' ]
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        persist-credentials: false
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - run: git config --global url."https://${{ secrets.CONNECTOR_SDK_TOKEN }}@github.com/".insteadOf ssh://git@github.com/
+    - run: npm install-ci-test --ignore-scripts
+    - run: npm run pack-zip:ncc
