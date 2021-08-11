@@ -1,31 +1,49 @@
+# Copyright (C) 2021 SailPoint Technologies, Inc.  All rights reserved.
+
 name: PRB
 
 on:
-  push:
-    branches: [ master ]
   pull_request:
-    branches: [ master ]
-
+    branches:
+      - master
 jobs:
-  saas-conn-docusign-esignature:
+  build-unittest:
+    name: Build Unit Test and ZIP Using Node.js ${{ matrix.node }}
     runs-on: ubuntu-latest
     defaults:
-      run:
-        shell: bash
+       run:
+         shell: bash
 
     strategy:
       matrix:
-        node-version: [ '16' ]
+        node: [ '16' ]
 
     steps:
-    - uses: actions/checkout@v2
-      with:
-        persist-credentials: false
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v2
-      with:
-        node-version: ${{ matrix.node-version }}
-
-    - run: git config --global url."https://${{ secrets.CONNECTOR_SDK_TOKEN }}@github.com/".insteadOf ssh://git@github.com/
-    - run: npm install-ci-test --ignore-scripts
-    - run: npm run pack-zip:ncc
+      - name: Workflow context details
+        run: |
+          echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
+          echo "💡 Job name is ${{ github.job }} and workflow name is ${{ github.workflow }}"
+          echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
+          echo "🔎 The name of branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
+      - name: Check out repository
+        uses: actions/checkout@v2.3.4
+        with:
+          persist-credentials: false
+      - name: Repository clone confirmation
+        run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
+      - name: Setup Node.js ${{ matrix.node }} runtime
+        uses: actions/setup-node@v2.4.0
+        with:
+          node-version: ${{ matrix.node }}
+      - name: Use HTTP instead of SSH for the saas connector sdk repository access
+        run: git config --global url."https://${{ secrets.CONNECTOR_SDK_TOKEN }}@github.com/".insteadOf ssh://git@github.com/
+      - name: Clean install dependencies and build
+        run: |
+          npm ci
+          npm run build
+      - name: Linting
+        run: npm run lint
+      - name: Unit tests
+        run: npm test
+      - name: Generate zip artifact
+        run: npm run pack-zip:ncc
