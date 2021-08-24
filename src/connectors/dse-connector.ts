@@ -186,7 +186,7 @@ export class DseConnector {
                         permissionProfileName: user.permissionProfileName,
                         sendActivationOnInvalidLogin: user.sendActivationOnInvalidLogin,
                         enableConnectForUser: user.enableConnectForUser,
-                        groups: user.groupList?.map((group: Group) => group?.groupId),
+                        groups: user.groupList?.map((group: Group) => group?.groupId) as string[],
                         defaultAccountId: user.defaultAccountId,
                         createdDateTime: user.createdDateTime,
                         lastLogin: user.lastLogin
@@ -555,7 +555,7 @@ export class DseConnector {
                 permissionProfileName: result.permissionProfileName,
                 sendActivationOnInvalidLogin: result.sendActivationOnInvalidLogin,
                 enableConnectForUser: result.enableConnectForUser,
-                groups: result.groupList?.map((group: Group) => group?.groupId),
+                groups: result.groupList?.map((group: Group) => group?.groupId) as string[],
                 defaultAccountId: result.defaultAccountId,
                 createdDateTime: result.createdDateTime,
                 lastLogin: result.lastLogin
