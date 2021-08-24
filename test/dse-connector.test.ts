@@ -134,7 +134,7 @@ const userReadOut = {
         createdDateTime: undefined,
         lastLogin: undefined
     }
-} as StdAccountReadOutput;
+};
 
 /////////////////// user read docusign mocked responses /////////////////
 const userReadMockResSuccess = {
@@ -649,14 +649,20 @@ describe("createAccount", () => {
         let outStream = new PassThrough({ objectMode: true });
         await inst.createAccount(accountEntInput, new ResponseStream<any>(outStream));
 
-        outStream.on('data', (chunk: StdAccountCreateOutput) => expect(chunk.attributes.groups[0]).toStrictEqual('8275323'));
+        outStream.on('data', (chunk: StdAccountCreateOutput) => {
+            expect(chunk.attributes.groups).not.toBeNull();
+            expect((chunk.attributes.groups instanceof Array) ? chunk.attributes.groups[0] : '').toStrictEqual('8275323');
+        });
     });
 
     test("[2] create account with request entitlement[array] success", async () => {
         let outStream = new PassThrough({ objectMode: true });
         await inst.createAccount(accountEntInputArray, new ResponseStream<any>(outStream));
 
-        outStream.on('data', (chunk: StdAccountCreateOutput) => expect(chunk.attributes.groups[0]).toStrictEqual('8275323'));
+        outStream.on('data', (chunk: StdAccountCreateOutput) => {
+            expect(chunk.attributes.groups).not.toBeNull();
+            expect((chunk.attributes.groups instanceof Array) ? chunk.attributes.groups[0] : '').toStrictEqual('8275323')
+        });
     });
 
     test("[3] empty response for account create", () => {
@@ -819,7 +825,8 @@ describe("updateAccount", () => {
         await inst.updateAccount(accountUpdatePlanForGroupAccess, new ResponseStream<any>(outStream));
 
         outStream.on('data', (chunk: StdAccountUpdateOutput) => {
-            expect(chunk?.attributes?.groups[0]).toStrictEqual('8275323');
+            expect(chunk.attributes?.groups).not.toBeNull();
+            expect((chunk.attributes?.groups instanceof Array) ? chunk.attributes.groups[0] : '').toStrictEqual('8275323');
         });
     });
 
@@ -828,7 +835,8 @@ describe("updateAccount", () => {
         await inst.updateAccount(accountUpdatePlanForGroupRevoke, new ResponseStream<any>(outStream));
 
         outStream.on('data', (chunk: StdAccountUpdateOutput) => {
-            expect(chunk?.attributes?.groups[0]).toStrictEqual('8275323');
+            expect(chunk.attributes?.groups).not.toBeNull();
+            expect((chunk.attributes?.groups instanceof Array) ? chunk.attributes.groups[0] : '').toStrictEqual('8275323');
         });
     });
 
