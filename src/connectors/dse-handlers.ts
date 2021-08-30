@@ -41,16 +41,14 @@ import { DseConfig } from './dse-config';
 export const validateConfig = (config: DseConfig): DseConfig => {
     if (!config.apiUrl) {
         throw new InvalidConfigurationError(`'apiUrl' is required`);
-    } else if (!config.oauthServerUrl) {
-        throw new InvalidConfigurationError(`'oauthServerUrl' is required`);
     } else if (!config.accountId) {
         throw new InvalidConfigurationError(`'accountId' is required`);
     } else if (!config.clientId) {
         throw new InvalidConfigurationError(`'clientId' is required`);
-    } else if (!config.clientSecret) {
-        throw new InvalidConfigurationError(`'clientSecret' is required`);
-    } else if (!config.refreshToken) {
-        throw new InvalidConfigurationError(`'refreshToken' is required`);
+    } else if (!config.userId) {
+        throw new InvalidConfigurationError(`'userId' is required`);
+    } else if (!config.privateKey) {
+        throw new InvalidConfigurationError(`'privateKey' is required`);
     }
 
     return config;
@@ -80,10 +78,11 @@ export const stdTestConnectionHandler: StdTestConnectionHandler = async (
 
             throw error;
         } else {
-            const err = new ConnectorError(`Test connection failed. ${error.message}`, error);
-            logger.error(err);
+            const err = error as Error;
+            const ce = new ConnectorError(`Test connection failed. ${err.message}`, err);
+            logger.error(ce);
 
-            throw err;
+            throw ce;
         }
     }
 };
@@ -109,10 +108,11 @@ export const stdAccountReadHandler: StdAccountReadHandler = async (
 
             throw error;
         } else {
-            const err = new ConnectorError(`Read account failed. ${error.message}`, error);
-            logger.error(err);
+            const err = error as Error;
+            const ce = new ConnectorError(`Read account failed. ${err.message}`, err);
+            logger.error(ce);
 
-            throw err;
+            throw ce;
         }
     }
 };
@@ -138,10 +138,11 @@ export const stdAccountListHandler: StdAccountListHandler = async (
 
             throw error;
         } else {
-            const err = new ConnectorError(`Account aggregation failed. ${error.message}`, error);
-            logger.error(err);
+            const err = error as Error;
+            const ce = new ConnectorError(`Account aggregation failed. ${err.message}`, err);
+            logger.error(ce);
 
-            throw err;
+            throw ce;
         }
     }
 };
@@ -185,10 +186,11 @@ export const stdEntitlementListHandler: StdEntitlementListHandler = async (
 
             throw error;
         } else {
-            const err = new ConnectorError(`Group aggregation failed. ${error.message}`, error);
-            logger.error(err);
+            const err = error as Error;
+            const ce = new ConnectorError(`Group aggregation failed. ${err.message}`, err);
+            logger.error(ce);
 
-            throw err;
+            throw ce;
         }
     }
 };
@@ -216,10 +218,11 @@ export const stdAccountCreateHandler: StdAccountCreateHandler = async (
 
             throw error;
         } else {
-            const err = new ConnectorError(`Account creation failed. ${error.message}`, error);
-            logger.error(err);
+            const err = error as Error;
+            const ce = new ConnectorError(`Account creation failed. ${err.message}`, err);
+            logger.error(ce);
 
-            throw err;
+            throw ce;
         }
     }
 };
@@ -247,10 +250,11 @@ export const stdAccountUpdateHandler: StdAccountUpdateHandler = async (
 
             throw error;
         } else {
-            const err = new ConnectorError(`Account updates failed.. ${error.message}`, error);
-            logger.error(err);
+            const err = error as Error;
+            const ce = new ConnectorError(`Account updates failed. ${err.message}`, err);
+            logger.error(ce);
 
-            throw err;
+            throw ce;
         }
     }
 };
@@ -278,10 +282,11 @@ export const stdAccountDeleteHandler: StdAccountDeleteHandler = async (
 
             throw error;
         } else {
-            const err = new ConnectorError(`Account delete failed. ${error.message}`, error);
-            logger.error(err);
+            const err = error as Error;
+            const ce = new ConnectorError(`Account delete failed. ${err.message}`, err);
+            logger.error(ce);
 
-            throw err;
+            throw ce;
         }
     }
 };

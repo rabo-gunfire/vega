@@ -8,7 +8,7 @@ This is a connector that works within SaaS Connectivity 2.0 platform.
 
 #### Prerequisites
 - [Node.js >= 16.2.0](https://nodejs.org/en/download/releases/)
-- [TypeScript >= 4.3.2](https://www.typescriptlang.org/download)
+- [TypeScript >= 4.4.2](https://www.typescriptlang.org/download)
 
 #### Install Project Dependencies
 

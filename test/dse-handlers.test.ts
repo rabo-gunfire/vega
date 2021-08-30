@@ -106,12 +106,15 @@ jest.mock("../src/connectors/dse-connector", () => {
 //////////////////////////////////////////////////////////////////////
 const mockConfig = {
     apiUrl: "https://fakeapi.acme.org/restapi",
-    oauthServerUrl: "https://fakeorg-d.org",
     accountId: '14072015',
     clientId: "b'nXQpVsglEGFJgfK'",
-    clientSecret: "clS3cRet",
-    refreshToken: "r4fesh'Tonaken"
-};
+    userId: "f73490fc-1a6e-42aa-a0a8-91bd09a68403",
+    privateKey: `-----BEGIN RSA PRIVATE KEY-----
+MIIEowIBAAKCAQEAgxhIk1YpLE9JLnuEcUEfulDULGkYT4qGzRJdRCIdsLiEgkD4
+d3nIfQwYzdN6pwh4wMOiN8EmBwxXCXSbd7OtBSw3maJSpvH6ceQCSkoIZFNBvYKG
+a1deIilhA8Y/c+IZYdZQxIBC8aNoO0zHlI9Y/sSeaisRjyQE8Ovj3Vb9PRfcCZkz
+-----END RSA PRIVATE KEY-----`
+} as DseConfig;
 
 jest.mock('@sailpoint/connector-sdk', () => {
     return {
@@ -364,45 +367,79 @@ describe("stdAccountDeleteHandler", () => {
 
 describe("validateConfig", () => {
     test("[0] apiUrl missing error", () => {
-        let mockConfig = { oauthServerUrl: "https://fakeorg-d.org", accountId: '14072015', clientId: "b'nXQpVsglEGFJgfK'", clientSecret: "clS3cRet", refreshToken: "r4fesh'Tonaken" };
+        let mockConfig = {
+            accountId: '14072015',
+            clientId: "b'nXQpVsglEGFJgfK'",
+            userId: "f73490fc-1a6e-42aa-a0a8-91bd09a68403",
+            privateKey: `-----BEGIN RSA PRIVATE KEY-----
+MIIEowIBAAKCAQEAgxhIk1YpLE9JLnuEcUEfulDULGkYT4qGzRJdRCIdsLiEgkD4
+d3nIfQwYzdN6pwh4wMOiN8EmBwxXCXSbd7OtBSw3maJSpvH6ceQCSkoIZFNBvYKG
+a1deIilhA8Y/c+IZYdZQxIBC8aNoO0zHlI9Y/sSeaisRjyQE8Ovj3Vb9PRfcCZkz
+-----END RSA PRIVATE KEY-----`
+        };
         expect(() => {
             dseHandler.validateConfig(mockConfig as DseConfig);
         }).toThrowError("'apiUrl' is required");
     });
 
-    test("[1] oauthServerUrl missing error", () => {
-        let mockConfig = { apiUrl: "https://fakeapi.acme.org/restapi", accountId: '14072015', clientId: "b'nXQpVsglEGFJgfK'", clientSecret: "clS3cRet", refreshToken: "r4fesh'Tonaken" };
+    test("[1] accountId missing error", () => {
+        let mockConfig = {
+            apiUrl: "https://fakeapi.acme.org/restapi",
+            clientId: "b'nXQpVsglEGFJgfK'",
+            userId: "f73490fc-1a6e-42aa-a0a8-91bd09a68403",
+            privateKey: `-----BEGIN RSA PRIVATE KEY-----
+MIIEowIBAAKCAQEAgxhIk1YpLE9JLnuEcUEfulDULGkYT4qGzRJdRCIdsLiEgkD4
+d3nIfQwYzdN6pwh4wMOiN8EmBwxXCXSbd7OtBSw3maJSpvH6ceQCSkoIZFNBvYKG
+a1deIilhA8Y/c+IZYdZQxIBC8aNoO0zHlI9Y/sSeaisRjyQE8Ovj3Vb9PRfcCZkz
+-----END RSA PRIVATE KEY-----`
+        } as DseConfig;
         expect(() => {
-            dseHandler.validateConfig(mockConfig as DseConfig);
-        }).toThrowError("'oauthServerUrl' is required");
-    });
-
-    test("[2] accountId missing error", () => {
-        let mockConfig = { apiUrl: "https://fakeapi.acme.org/restapi", oauthServerUrl: "https://fakeorg-d.org", clientId: "b'nXQpVsglEGFJgfK'", clientSecret: "clS3cRet", refreshToken: "r4fesh'Tonaken" };
-        expect(() => {
-            dseHandler.validateConfig(mockConfig as DseConfig);
+            dseHandler.validateConfig(mockConfig);
         }).toThrowError("'accountId' is required");
     });
 
-    test("[3] clientId missing error", () => {
-        let mockConfig = { apiUrl: "https://fakeapi.acme.org/restapi", oauthServerUrl: "https://fakeorg-d.org", accountId: '14072015', clientSecret: "clS3cRet", refreshToken: "r4fesh'Tonaken" };
+    test("[2] clientId missing error", () => {
+        let mockConfig = {
+            apiUrl: "https://fakeapi.acme.org/restapi",
+            accountId: '14072015',
+            userId: "f73490fc-1a6e-42aa-a0a8-91bd09a68403",
+            privateKey: `-----BEGIN RSA PRIVATE KEY-----
+MIIEowIBAAKCAQEAgxhIk1YpLE9JLnuEcUEfulDULGkYT4qGzRJdRCIdsLiEgkD4
+d3nIfQwYzdN6pwh4wMOiN8EmBwxXCXSbd7OtBSw3maJSpvH6ceQCSkoIZFNBvYKG
+a1deIilhA8Y/c+IZYdZQxIBC8aNoO0zHlI9Y/sSeaisRjyQE8Ovj3Vb9PRfcCZkz
+-----END RSA PRIVATE KEY-----`
+        } as DseConfig;
         expect(() => {
-            dseHandler.validateConfig(mockConfig as DseConfig);
+            dseHandler.validateConfig(mockConfig);
         }).toThrowError("'clientId' is required");
     });
 
-    test("[4] clientSecret missing error", () => {
-        let mockConfig = { apiUrl: "https://fakeapi.acme.org/restapi", oauthServerUrl: "https://fakeorg-d.org", accountId: '14072015', clientId: "b'nXQpVsglEGFJgfK'", refreshToken: "r4fesh'Tonaken" };
+    test("[3] userId missing error", () => {
+        let mockConfig = {
+            apiUrl: "https://fakeapi.acme.org/restapi",
+            accountId: '14072015',
+            clientId: "b'nXQpVsglEGFJgfK'",
+            privateKey: `-----BEGIN RSA PRIVATE KEY-----
+MIIEowIBAAKCAQEAgxhIk1YpLE9JLnuEcUEfulDULGkYT4qGzRJdRCIdsLiEgkD4
+d3nIfQwYzdN6pwh4wMOiN8EmBwxXCXSbd7OtBSw3maJSpvH6ceQCSkoIZFNBvYKG
+a1deIilhA8Y/c+IZYdZQxIBC8aNoO0zHlI9Y/sSeaisRjyQE8Ovj3Vb9PRfcCZkz
+-----END RSA PRIVATE KEY-----`
+        } as DseConfig;
         expect(() => {
-            dseHandler.validateConfig(mockConfig as DseConfig)
-        }).toThrowError("'clientSecret' is required");
+            dseHandler.validateConfig(mockConfig);
+        }).toThrowError("'userId' is required");
     });
 
-    test("[5] refreshToken missing error", () => {
-        let mockConfig = { apiUrl: "https://fakeapi.acme.org/restapi", oauthServerUrl: "https://fakeorg-d.org", accountId: '14072015', clientId: "b'nXQpVsglEGFJgfK'", clientSecret: "clS3cRet" };
+    test("[5] privateKey missing error", () => {
+        let mockConfig = {
+            apiUrl: "https://fakeapi.acme.org/restapi",
+            accountId: '14072015',
+            clientId: "b'nXQpVsglEGFJgfK'",
+            userId: "f73490fc-1a6e-42aa-a0a8-91bd09a68403",
+        } as DseConfig;
         expect(() => {
-            dseHandler.validateConfig(mockConfig as DseConfig)
-        }).toThrowError("'refreshToken' is required");
+            dseHandler.validateConfig(mockConfig)
+        }).toThrowError("'privateKey' is required");
     });
 });
 

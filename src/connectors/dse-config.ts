@@ -5,9 +5,8 @@
  */
 export interface DseConfig {
     apiUrl: string
-    oauthServerUrl: string
     accountId: string
     clientId: string
-    clientSecret: string
-    refreshToken: string
+    userId: string
+    privateKey: string
 }

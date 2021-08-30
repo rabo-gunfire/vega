@@ -17,7 +17,7 @@ export const convertToConnectorError = (err: Error | any): void => {
         if (e.status) {
             if (e.status == 400) {
                 throw new InvalidRequestError(`${e.status} ${e.message}`, e);
-            } if (e.status == 401) {
+            } else if (e.status == 401) {
                 throw new InvalidConfigurationError(`${e.status} ${e.message}`, e);
             } else if (e.status == 403) {
                 throw new InsufficientPermissionError(`${e.status} ${e.message}`, e);
@@ -29,9 +29,15 @@ export const convertToConnectorError = (err: Error | any): void => {
         } else {
             throw new ConnectorError(`${e.message}`, e);
         }
-    } else if (err.code) {  // wire errors
-        if (err.code === 'ENOTFOUND') {
+    } else if (err.code) {
+        // wire errors
+        if (err.code == 'ENOTFOUND') {
             throw new InvalidConfigurationError(`Unknown host. message: ${err.message} , errno: ${err.errno} , code: ${err.code}`, err);
+        }
+
+        // RSA key errors
+        if (err.code == 'ERR_OSSL_PEM_BAD_END_LINE' || err.code == 'ERR_OSSL_PEM_NO_START_LINE') {
+            throw new InvalidConfigurationError(`Invalid RSA private key. ${err.message}`, err);
         }
     } else {
         throw new ConnectorError(err);

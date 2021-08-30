@@ -73,6 +73,32 @@ describe("wire errors", () => {
     });
 });
 
+describe("RSA key errors", () => {
+    test("[0] invalid start line", () => {
+
+        let error = {
+            code: "ERR_OSSL_PEM_BAD_END_LINE",
+            message: "Bad end of line"
+        }
+
+        expect(() => {
+            convertToConnectorError(error);
+        }).toThrowError("Invalid RSA private key. Bad end of line");
+    });
+
+    test("[1] invalid end line", () => {
+
+        let error = {
+            code: "ERR_OSSL_PEM_NO_START_LINE",
+            message: "Invalid start line"
+        }
+
+        expect(() => {
+            convertToConnectorError(error);
+        }).toThrowError("Invalid RSA private key. Invalid start line");
+    });
+});
+
 describe("regular errors", () => {
     test("[0] user not found", () => {
 
