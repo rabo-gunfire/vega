@@ -89,11 +89,11 @@ export class DocuSignClient {
      * @returns {string} access_token
      */
     private async getToken(): Promise<string> {
-        const jwtLifeSec = 10 * 60  // requested lifetime for the JWT is 10 min
+        const jwtLifeSec = 10 * 60;  // requested lifetime for the JWT is 10 min
         const scopes = [
             'signature',
             'impersonation'
-        ]
+        ];
         const result = await
             this._dsApiClient
                 .requestJWTUserToken(this.dsClientId,
@@ -118,15 +118,15 @@ export class DocuSignClient {
      * SIDE EFFECT: Sets the access access token that the SDK will use.
      */
     private async checkToken(): Promise<boolean> {
-        let bufferMin = 10, // 10 minute buffer time
+        const bufferMin = 10, // 10 minute buffer time
             noToken = !this.accessToken || !this.tokenExpiresAt,
             now = moment(),
             needToken = noToken || moment(this.tokenExpiresAt).subtract(bufferMin, 'm').isBefore(now);
 
-        if (noToken) { logger.debug('checkToken: Starting up--need a token') }
-        if (needToken && !noToken) { logger.debug('checkToken: Replacing old token') }
-        if (!needToken) { logger.debug('checkToken: Using current token') }
+        if (noToken) { logger.debug('checkToken: Starting up--need a token'); }
+        if (needToken && !noToken) { logger.debug('checkToken: Replacing old token'); }
+        if (!needToken) { logger.debug('checkToken: Using current token'); }
 
-        return needToken
+        return needToken;
     }
 }
