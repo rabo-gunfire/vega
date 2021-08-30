@@ -64,7 +64,7 @@ export class DocuSignClient {
     async refreshAccessToken(): Promise<void> {
         // if exiting token expires or doesn't
         // have, then create a new access token.
-        if (await this.checkToken()) {
+        if (this.checkToken()) {
             let token;
             try {
                 token = await this.getToken();
@@ -117,7 +117,7 @@ export class DocuSignClient {
      *
      * SIDE EFFECT: Sets the access access token that the SDK will use.
      */
-    private async checkToken(): Promise<boolean> {
+    private checkToken(): boolean {
         const bufferMin = 10, // 10 minute buffer time
             noToken = !this.accessToken || !this.tokenExpiresAt,
             now = moment(),
