@@ -9,6 +9,7 @@ import {
     UserInformationList,
     UsersResponse,
 } from "docusign-esign";
+import { DseConfig } from "../src/connectors/dse-config";
 
 //////////////////////////////////////////////////////////////////////
 //
@@ -183,7 +184,7 @@ describe("dsClient", () => {
     let inst: docusign.DocuSign;
     beforeEach(() => {
         inst = new docusign.DocuSign(
-            new dsclient.DocuSignClient("https://fakeapi.acme.org/restapi", "https://fakeorg-d.org", "b'nXQpVsglEGFJgfK'", "S3cRet", "access"));
+            new dsclient.DocuSignClient("https://fakeapi.acme.org/restapi", "b'nXQpVsglEGFJgfK'", "f73490fc-1a6e-42aa-a0a8-91bd09a68403", "-----BEGIN RSA PRIVATE KEY-----"));
     })
 
     test("[0] ds client to be defined", async () => {
@@ -198,7 +199,7 @@ describe("getUser", () => {
 
     beforeEach(() => {
         inst = new docusign.DocuSign(
-            new dsclient.DocuSignClient("https://fakeapi.acme.org/restapi", "https://fakeorg-d.org", "b'nXQpVsglEGFJgfK'", "S3cRet", "access"));
+            new dsclient.DocuSignClient("https://fakeapi.acme.org/restapi", "b'nXQpVsglEGFJgfK'", "f73490fc-1a6e-42aa-a0a8-91bd09a68403", "-----BEGIN RSA PRIVATE KEY-----"));
     });
 
     test("[o] get user", async () => {
@@ -216,7 +217,7 @@ describe("listUsers", () => {
 
     beforeEach(() => {
         inst = new docusign.DocuSign(
-            new dsclient.DocuSignClient("https://fakeapi.acme.org/restapi", "https://fakeorg-d.org", "b'nXQpVsglEGFJgfK'", "S3cRet", "access"));
+            new dsclient.DocuSignClient("https://fakeapi.acme.org/restapi", "b'nXQpVsglEGFJgfK'", "f73490fc-1a6e-42aa-a0a8-91bd09a68403", "-----BEGIN RSA PRIVATE KEY-----"));
     });
 
     test("[0] list users", async () => {
@@ -234,7 +235,7 @@ describe("listEntitlements", () => {
 
     beforeEach(() => {
         inst = new docusign.DocuSign(
-            new dsclient.DocuSignClient("https://fakeapi.acme.org/restapi", "https://fakeorg-d.org", "b'nXQpVsglEGFJgfK'", "S3cRet", "access"));
+            new dsclient.DocuSignClient("https://fakeapi.acme.org/restapi", "b'nXQpVsglEGFJgfK'", "f73490fc-1a6e-42aa-a0a8-91bd09a68403", "-----BEGIN RSA PRIVATE KEY-----"));
     });
 
     test("[0] list entitlements", async () => {
@@ -254,7 +255,7 @@ describe("createUser", () => {
 
     beforeEach(() => {
         inst = new docusign.DocuSign(
-            new dsclient.DocuSignClient("https://fakeapi.acme.org/restapi", "https://fakeorg-d.org", "b'nXQpVsglEGFJgfK'", "S3cRet", "access"));
+            new dsclient.DocuSignClient("https://fakeapi.acme.org/restapi", "b'nXQpVsglEGFJgfK'", "f73490fc-1a6e-42aa-a0a8-91bd09a68403", "-----BEGIN RSA PRIVATE KEY-----"));
     });
 
     test("[0] create user", async () => {
@@ -276,7 +277,7 @@ describe("updateUser", () => {
 
     beforeEach(() => {
         inst = new docusign.DocuSign(
-            new dsclient.DocuSignClient("https://fakeapi.acme.org/restapi", "https://fakeorg-d.org", "b'nXQpVsglEGFJgfK'", "S3cRet", "access"));
+            new dsclient.DocuSignClient("https://fakeapi.acme.org/restapi", "b'nXQpVsglEGFJgfK'", "f73490fc-1a6e-42aa-a0a8-91bd09a68403", "-----BEGIN RSA PRIVATE KEY-----"));
     });
 
     test("[0] update user", async () => {
@@ -296,7 +297,7 @@ describe("deleteUser", () => {
 
     beforeEach(() => {
         inst = new docusign.DocuSign(
-            new dsclient.DocuSignClient("https://fakeapi.acme.org/restapi", "https://fakeorg-d.org", "b'nXQpVsglEGFJgfK'", "S3cRet", "access"));
+            new dsclient.DocuSignClient("https://fakeapi.acme.org/restapi", "b'nXQpVsglEGFJgfK'", "f73490fc-1a6e-42aa-a0a8-91bd09a68403", "-----BEGIN RSA PRIVATE KEY-----"));
     });
 
     test("[0] delete user", async () => {
@@ -316,7 +317,7 @@ describe("updateGroupUsers", () => {
 
     beforeEach(() => {
         inst = new docusign.DocuSign(
-            new dsclient.DocuSignClient("https://fakeapi.acme.org/restapi", "https://fakeorg-d.org", "b'nXQpVsglEGFJgfK'", "S3cRet", "access"));
+            new dsclient.DocuSignClient("https://fakeapi.acme.org/restapi", "b'nXQpVsglEGFJgfK'", "f73490fc-1a6e-42aa-a0a8-91bd09a68403", "-----BEGIN RSA PRIVATE KEY-----"));
     });
 
     test("[0] add user to group", async () => {
@@ -335,7 +336,7 @@ describe("deleteGroupUsers", () => {
 
     beforeEach(() => {
         inst = new docusign.DocuSign(
-            new dsclient.DocuSignClient("https://fakeapi.acme.org/restapi", "https://fakeorg-d.org", "b'nXQpVsglEGFJgfK'", "S3cRet", "access"));
+            new dsclient.DocuSignClient("https://fakeapi.acme.org/restapi", "b'nXQpVsglEGFJgfK'", "f73490fc-1a6e-42aa-a0a8-91bd09a68403", "-----BEGIN RSA PRIVATE KEY-----"));
     });
 
     test("[0] remove user from group", async () => {

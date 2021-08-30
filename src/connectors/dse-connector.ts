@@ -49,10 +49,9 @@ export class DseConnector {
     constructor(config: DseConfig) {
         this.docuSign = new DocuSign(
             new DocuSignClient(config.apiUrl,
-                config.oauthServerUrl,
                 config.clientId,
-                config.clientSecret,
-                config.refreshToken));
+                config.userId,
+                config.privateKey));
 
         this.accountId = config.accountId;
     }

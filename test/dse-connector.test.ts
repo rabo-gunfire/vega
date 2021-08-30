@@ -18,20 +18,22 @@ import { InvalidResponseError } from "../src/connectors/invalid-response-error";
 //////////////////////////////////////////////////////////////////////
 
 const mockContext: Context = {
-    config: {
-        apiUrl: "https://fakeapi.acme.org/restapi",
-        oauthServerUrl: "https://fakeorg-d.org",
-        accountId: '14072015',
-        clientId: "b'nXQpVsglEGFJgfK'",
-        clientSecret: "clS3cRet",
-        refreshToken: "r4fesh'Tonaken"
-    },
     id: "54bcaba7-5698-4471-a1b0-26274d4af74b",
     name: "DocuSign eSignature",
     version: 1.0
 }
 
-const mockConfig = mockContext.config as DseConfig;
+const mockConfig = {
+    apiUrl: "https://fakeapi.acme.org/restapi",
+    accountId: '14072015',
+    clientId: "b'nXQpVsglEGFJgfK'",
+    userId: "f73490fc-1a6e-42aa-a0a8-91bd09a68403",
+    privateKey: `-----BEGIN RSA PRIVATE KEY-----
+MIIEowIBAAKCAQEAgxhIk1YpLE9JLnuEcUEfulDULGkYT4qGzRJdRCIdsLiEgkD4
+d3nIfQwYzdN6pwh4wMOiN8EmBwxXCXSbd7OtBSw3maJSpvH6ceQCSkoIZFNBvYKG
+a1deIilhA8Y/c+IZYdZQxIBC8aNoO0zHlI9Y/sSeaisRjyQE8Ovj3Vb9PRfcCZkz
+-----END RSA PRIVATE KEY-----`
+} as DseConfig;
 
 ////////// Unauthorized 401 error //////////////
 const unauthorizedError = new Error("Unauthorized") as ResponseError;
@@ -380,8 +382,7 @@ jest.mock("../src/docusign/docusign", () => {
         DocuSign: jest.fn().mockImplementation(() => {
             return {
                 dsClient: new DocuSignClient(mockConfig.apiUrl,
-                    mockConfig.oauthServerUrl, mockConfig.clientId,
-                    mockConfig.clientSecret, mockConfig.clientSecret),
+                    mockConfig.clientId, mockConfig.userId, mockConfig.privateKey),
                 getUser: jest.fn().mockImplementationOnce(() => {
                     return userReadRes;
                 }),

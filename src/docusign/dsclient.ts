@@ -1,20 +1,21 @@
 /* Copyright (C) 2021 SailPoint Technologies, Inc.  All rights reserved. */
 
 import { ApiClient } from "docusign-esign";
-import superagent, { Response, ResponseError } from "superagent";
-import { ConnectorError } from "../connectors/connector-error";
+import moment, { Moment } from "moment";
+import { Response } from "superagent";
 import { InvalidResponseError } from "../connectors/invalid-response-error";
+import { convertToConnectorError } from "../tools/error-converter";
+import { logger } from "../tools/logger";
 
 export class DocuSignClient {
     private readonly baseUriSuffix: string = '/restapi'
     private readonly authorizationHeader: string = 'Authorization';
     private readonly authenticationScheme: string = 'Bearer';
-    private apiUrl: string;
-    private oauthServerUrl: string;
-    private clientId: string;
-    private clientSecret: string;
-    private refreshToken: string;
+    private dsClientId: string;
+    private impersonatedUserGuid: string;
+    private rsaKey: string;
     private accessToken!: string;
+    private tokenExpiresAt: Moment | undefined;
 
     /**
      * DocuSign eSignature API client.
@@ -23,15 +24,20 @@ export class DocuSignClient {
 
     /**
      * Constructor to initialize DocuSign API client.
+     *
+     * @param {string} apiUrl - Account Base URI (API URL)
+     * @param {string} clientId - DocuSign OAuth Client Id (AKA Integrator Key)
+     * OAuth2 client ID: Identifies the client making the request.
+     * Client applications may be scoped to a limited set of system access.
+     * @param {string} impersonatedUserGuid - DocuSign user Id to be impersonated (This is a UUID)
+     * @param {string} privateKey - RSA private key
      */
-    constructor(apiUrl: string, oauthServerUrl: string, clientId: string, clientSecret: string, refreshToken: string) {
-        this.apiUrl = apiUrl;
-        this.oauthServerUrl = oauthServerUrl;
-        this.clientId = clientId;
-        this.clientSecret = clientSecret;
-        this.refreshToken = refreshToken;
+    constructor(apiUrl: string, clientId: string, userId: string, privateKey: string) {
+        this.dsClientId = clientId;
+        this.impersonatedUserGuid = userId;
+        this.rsaKey = privateKey;
 
-        this._dsApiClient = new ApiClient({ basePath: apiUrl + this.baseUriSuffix, oAuthBasePath: oauthServerUrl });
+        this._dsApiClient = new ApiClient({ basePath: apiUrl + this.baseUriSuffix, oAuthBasePath: '' });
     }
 
     /**
@@ -52,45 +58,75 @@ export class DocuSignClient {
     }
 
     /**
-     * Generates access token using refresh_token oAuth
-     * flow and add access token to requests header.
+     * Generates access token using JWT flow
+     * and adds access token to requests header.
      */
     async refreshAccessToken(): Promise<void> {
-        // generate token
-        let token;
-        try {
-            token = await this.generateToken();
-        } catch (error) {
-            throw new ConnectorError('Failed to generate an access token.', error);
-        }
+        // if exiting token expires or doesn't
+        // have, then create a new access token.
+        if (await this.checkToken()) {
+            let token;
+            try {
+                token = await this.getToken();
+            } catch (error) {
+                convertToConnectorError(error);
+            }
 
-        if (!token) {
-            throw new InvalidResponseError('Found empty response in token generation.');
-        }
+            if (!token) {
+                throw new InvalidResponseError('Found empty response in token generation.');
+            }
 
-        this.accessToken = token;
+            this.accessToken = token;
+        }
 
         // Add authorization header to the API client. Useful for Authentication.
         this.dsApiClient.addDefaultHeader(this.authorizationHeader, this.authenticationScheme + ' ' + this.accessToken);
     }
 
-    private async generateToken(): Promise<string> {
-        const clientString: string = this.clientId + ':' + this.clientSecret;
-        const request = superagent.post(this.oauthServerUrl + '/oauth/token')
-            .type('form')
-            .accept('application/json')
-            .set('Authorization', 'Basic ' + Buffer.from(clientString, 'utf-8').toString('base64'))
-            .send({ grant_type: 'refresh_token' })
-            .send({ refresh_token: this.refreshToken });
+    /**
+     * Async function to obtain a accessToken via JWT grant
+     *
+     * @returns {string} access_token
+     */
+    private async getToken(): Promise<string> {
+        const jwtLifeSec = 10 * 60  // requested lifetime for the JWT is 10 min
+        const scopes = [
+            'signature',
+            'impersonation'
+        ]
+        const result = await
+            this._dsApiClient
+                .requestJWTUserToken(this.dsClientId,
+                    this.impersonatedUserGuid,
+                    scopes,
+                    Buffer.from(this.rsaKey, 'utf8'),
+                    jwtLifeSec) as Response;
 
-        return new Promise<string>((resolve, reject) => {
-            request.end((err: ResponseError, res: Response) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve(res.body.access_token);
-                }
-            });
-        });
+        this.tokenExpiresAt = moment().add(result.body.expires_in, 's');
+
+        return result.body.access_token;
+    }
+
+    /**
+     * This is the key method for the object.
+     * It should be called before any API call to DocuSign.
+     * It checks that the existing access access token can be used.
+     * If the existing access token is expired or doesn't exist, then
+     * a new access token will be obtained from DocuSign by using
+     * the JWT flow.
+     *
+     * SIDE EFFECT: Sets the access access token that the SDK will use.
+     */
+    private async checkToken(): Promise<boolean> {
+        let bufferMin = 10, // 10 minute buffer time
+            noToken = !this.accessToken || !this.tokenExpiresAt,
+            now = moment(),
+            needToken = noToken || moment(this.tokenExpiresAt).subtract(bufferMin, 'm').isBefore(now);
+
+        if (noToken) { logger.debug('checkToken: Starting up--need a token') }
+        if (needToken && !noToken) { logger.debug('checkToken: Replacing old token') }
+        if (!needToken) { logger.debug('checkToken: Using current token') }
+
+        return needToken
     }
 }
