@@ -62,13 +62,10 @@ export class DseConnector {
      * @param {Response<StdTestConnectionOutput>} res - stream to write a response
      */
     async testConnection(res: Response<StdTestConnectionOutput>): Promise<void> {
-        // Always refresh a token before interacting with DocuSign eSgintaure app
-        await this.docuSign.dsClient.refreshAccessToken();
-
         // Decode an access token and find a subject
         let result;
         try {
-            result = await this.docuSign.dsClient.getTokenUserInfo();
+            result = await this.docuSign.getTokenUserInfo();
         } catch (error) {
             convertToConnectorError(error);
         }
@@ -106,9 +103,6 @@ export class DseConnector {
             throw new InvalidRequestError('Native identifier cannot be empty.');
         }
 
-        // Always refresh a token before interacting with DocuSign eSgintaure app
-        await this.docuSign.dsClient.refreshAccessToken();
-
         // write to response stream
         res.send(await this.userAccountRead(input.identity));
     }
@@ -126,9 +120,6 @@ export class DseConnector {
         let offset = 0;
 
         while (hasNextPage) {
-            // Always refresh a token before interacting with DocuSign eSgintaure app
-            await this.docuSign.dsClient.refreshAccessToken();
-
             const opts = {
                 // When set to true, users membership information is returned.
                 additionalInfo: true,
@@ -208,9 +199,6 @@ export class DseConnector {
         let offset = 0;
 
         while (hasNextPage) {
-            // Always refresh a token before interacting with DocuSign eSgintaure app
-            await this.docuSign.dsClient.refreshAccessToken();
-
             const opts = {
                 // The position within the total result set from which to start returning values.
                 startPosition: offset,
@@ -289,9 +277,6 @@ export class DseConnector {
         const users = [];
         users.push(userAttrs);
 
-        // Always refresh a token before interacting with DocuSign eSgintaure app
-        await this.docuSign.dsClient.refreshAccessToken();
-
         let result;
         try {
             result = await this.docuSign.createUser(this.accountId, { newUsersDefinition: { newUsers: users } });
@@ -366,9 +351,6 @@ export class DseConnector {
         if (!plan.identity) {
             throw new InvalidRequestError('Native identifier cannot be empty.');
         }
-
-        // Always refresh a token before interacting with DocuSign eSgintaure app
-        await this.docuSign.dsClient.refreshAccessToken();
 
         const userId = plan.identity;
         const entitlementsUpdates = plan.changes.filter((item) => (item.attribute == this.groupAttr));
@@ -496,9 +478,6 @@ export class DseConnector {
             throw new InvalidRequestError('Native identifier cannot be empty.');
         }
 
-        // Always refresh a token before interacting with DocuSign eSgintaure app
-        await this.docuSign.dsClient.refreshAccessToken();
-
         let result;
         try {
             result = await this.docuSign.deleteUser(this.accountId, { userInfoList: { users: [{ userId: input.identity }] } });
@@ -521,7 +500,6 @@ export class DseConnector {
      * @returns {StdAccountReadOutput} user - user account resource object.
      */
     private async userAccountRead(userId: string): Promise<StdAccountReadOutput> {
-
         let result;
         try {
             result = await this.docuSign.getUser(this.accountId, userId);

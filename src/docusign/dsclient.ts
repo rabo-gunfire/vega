@@ -2,10 +2,10 @@
 
 import { ApiClient } from "docusign-esign";
 import moment, { Moment } from "moment";
-import { Response } from "superagent";
 import { InvalidResponseError } from "../connectors/invalid-response-error";
 import { convertToConnectorError } from "../tools/error-converter";
 import { logger } from "../tools/logger";
+import { executeRequestThrottleOn } from "./request-throttler";
 
 export class DocuSignClient {
     private readonly baseUriSuffix: string = '/restapi'
@@ -54,7 +54,7 @@ export class DocuSignClient {
      * @returns {any} OAuth UserInfo model.
      */
     async getTokenUserInfo(): Promise<any> {
-        return this.dsApiClient.getUserInfo(this.accessToken);
+        return executeRequestThrottleOn(this.dsApiClient.getUserInfo, this.dsApiClient, [this.accessToken]);
     }
 
     /**
@@ -94,17 +94,15 @@ export class DocuSignClient {
             'signature',
             'impersonation'
         ];
-        const result = await
-            this._dsApiClient
-                .requestJWTUserToken(this.dsClientId,
-                    this.impersonatedUserGuid,
-                    scopes,
-                    Buffer.from(this.rsaKey, 'utf8'),
-                    jwtLifeSec) as Response;
 
-        this.tokenExpiresAt = moment().add(result.body.expires_in, 's');
+        const token = await executeRequestThrottleOn(
+            this.dsApiClient.requestJWTUserToken,
+            this.dsApiClient,
+            [this.dsClientId, this.impersonatedUserGuid, scopes, Buffer.from(this.rsaKey, 'utf8'), jwtLifeSec]);
 
-        return result.body.access_token;
+        this.tokenExpiresAt = moment().add(token.body.expires_in, 's');
+
+        return token.body.access_token;
     }
 
     /**

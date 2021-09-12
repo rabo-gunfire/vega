@@ -383,6 +383,9 @@ jest.mock("../src/docusign/docusign", () => {
             return {
                 dsClient: new DocuSignClient(mockConfig.apiUrl,
                     mockConfig.clientId, mockConfig.userId, mockConfig.privateKey),
+                getTokenUserInfo: jest.fn().mockImplementationOnce(() => {
+                    return tokenDecodeRes;
+                }),
                 getUser: jest.fn().mockImplementationOnce(() => {
                     return userReadRes;
                 }),
