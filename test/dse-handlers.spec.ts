@@ -6,7 +6,6 @@ import {
     StdAccountCreateInput,
     StdAccountCreateOutput,
     StdAccountDeleteInput,
-    StdAccountDeleteOutput,
     StdAccountListOutput,
     StdAccountReadInput,
     StdAccountReadOutput,
@@ -327,7 +326,7 @@ describe("Update Account", () => {
             context,
             plan,
             new PassThrough({ objectMode: true })
-                .on('data', (chunk: StdAccountCreateOutput) => {
+                .on('data', (chunk: StdAccountReadOutput) => {
                     expect(chunk).not.toBeNull();
                     expect(chunk).not.toBeUndefined();
                     expect(chunk.identity).not.toBeNull()
@@ -338,7 +337,6 @@ describe("Update Account", () => {
                     expect(chunk.attributes.groups).not.toBeNull();
                     expect(chunk.attributes.groups).not.toBeUndefined();
                     expect((chunk.attributes.groups as Array<String>).length).toBeGreaterThanOrEqual(1);
-                    expect(chunk.attributes.company).toStrictEqual(company)
                 })
         );
     });

@@ -9,36 +9,50 @@ import {
     UsersResponse
 } from "docusign-esign";
 import { DocuSignClient } from "./dsclient";
+import { executeRequestThrottleOn } from "./request-throttler";
 
 export class DocuSign {
-
-    private apiClient: DocuSignClient;
+    /**
+     * DocuSign eSignature client SDK wrapper
+     */
+    private dseClient: DocuSignClient;
 
     /**
      * Constructor to initialize DocuSign API client.
-     * 
+     *
      * @param {DocuSignClient} dsClient - dse API client
      */
-    constructor(dsClient: DocuSignClient) {
-        this.apiClient = dsClient;
+    constructor(dseClient: DocuSignClient) {
+        this.dseClient = dseClient;
     }
 
     /**
-     * Get the docusign API client.
+     * Get the native docusign API client.
      */
     get dsClient(): DocuSignClient {
-        return this.apiClient;
+        return this.dseClient;
+    }
+
+    async getTokenUserInfo(): Promise<any> {
+        // Always refresh a token before interacting with DocuSign eSgintaure app
+        await this.dsClient.refreshAccessToken();
+
+        return this.dsClient.getTokenUserInfo();
     }
 
     /**
      * Gets the user information for a specified user.
-     * 
+     *
      * @param {string} accountId - The external account number (int) or account ID Guid.
      * @param {string} userId - The user ID of the user being accessed.
      * @returns {UserInformation} A user details.
      */
     async getUser(accountId: string, userId: string): Promise<UserInformation> {
-        return new UsersApi(this.apiClient.dsApiClient).getInformation(accountId, userId);
+        // Always refresh a token before interacting with DocuSign eSgintaure app
+        await this.dsClient.refreshAccessToken();
+
+        const usersApi = new UsersApi(this.dsClient.dsApiClient);
+        return executeRequestThrottleOn(usersApi.getInformation, usersApi, [accountId, userId]);
     }
 
     /**
@@ -48,7 +62,11 @@ export class DocuSign {
      * @returns {UserInformationList} List of users.
      */
     async listUsers(accountId: string, opts: any): Promise<UserInformationList> {
-        return new UsersApi(this.apiClient.dsApiClient).list(accountId, opts);
+        // Always refresh a token before interacting with DocuSign eSgintaure app
+        await this.dsClient.refreshAccessToken();
+
+        const usersApi = new UsersApi(this.dsClient.dsApiClient);
+        return executeRequestThrottleOn(usersApi.list, usersApi, [accountId, opts]);
     }
 
     /**
@@ -58,7 +76,11 @@ export class DocuSign {
      * @returns {UserInformationList} List of users.
      */
     async listEntitlements(accountId: string, opts: any): Promise<UserInformationList> {
-        return new GroupsApi(this.apiClient.dsApiClient).listGroups(accountId, opts);
+        // Always refresh a token before interacting with DocuSign eSgintaure app
+        await this.dsClient.refreshAccessToken();
+
+        const groupsApi = new GroupsApi(this.dsClient.dsApiClient);
+        return executeRequestThrottleOn(groupsApi.listGroups, groupsApi, [accountId, opts]);
     }
 
     /**
@@ -70,7 +92,11 @@ export class DocuSign {
      * @returns {UsersResponse} - A user response object.
      */
     async updateGroupUsers(accountId: string, groupId: string, body: any): Promise<UsersResponse> {
-        return new GroupsApi(this.apiClient.dsApiClient).updateGroupUsers(accountId, groupId, body);
+        // Always refresh a token before interacting with DocuSign eSgintaure app
+        await this.dsClient.refreshAccessToken();
+
+        const groupsApi = new GroupsApi(this.dsClient.dsApiClient);
+        return executeRequestThrottleOn(groupsApi.updateGroupUsers, groupsApi, [accountId, groupId, body]);
     }
 
     /**
@@ -82,7 +108,11 @@ export class DocuSign {
      * @returns {UsersResponse} - A user response object.
      */
     async deleteGroupUsers(accountId: string, groupId: string, body: any): Promise<UsersResponse> {
-        return new GroupsApi(this.apiClient.dsApiClient).deleteGroupUsers(accountId, groupId, body);
+        // Always refresh a token before interacting with DocuSign eSgintaure app
+        await this.dsClient.refreshAccessToken();
+
+        const groupsApi = new GroupsApi(this.dsClient.dsApiClient);
+        return executeRequestThrottleOn(groupsApi.deleteGroupUsers, groupsApi, [accountId, groupId, body]);
     }
 
     /**
@@ -94,7 +124,11 @@ export class DocuSign {
      * @returns {UserInformation} - A user information object.
      */
     async updateUser(accountId: string, userId: string, body: any): Promise<UserInformation> {
-        return new UsersApi(this.apiClient.dsApiClient).updateUser(accountId, userId, body);
+        // Always refresh a token before interacting with DocuSign eSgintaure app
+        await this.dsClient.refreshAccessToken();
+
+        const usersApi = new UsersApi(this.dsClient.dsApiClient);
+        return executeRequestThrottleOn(usersApi.updateUser, usersApi, [accountId, userId, body]);
     }
 
     /**
@@ -105,7 +139,11 @@ export class DocuSign {
      * @returns {NewUsersSummary} - New user summary object.
      */
     async createUser(accountId: string, body: any): Promise<NewUsersSummary> {
-        return new UsersApi(this.apiClient.dsApiClient).create(accountId, body);
+        // Always refresh a token before interacting with DocuSign eSgintaure app
+        await this.dsClient.refreshAccessToken();
+
+        const usersApi = new UsersApi(this.dsClient.dsApiClient);
+        return executeRequestThrottleOn(usersApi.create, usersApi, [accountId, body]);
     }
 
     /**
@@ -118,6 +156,10 @@ export class DocuSign {
      * @returns {UsersResponse} - A user information object.
      */
     async deleteUser(accountId: string, body: any): Promise<UsersResponse> {
-        return new UsersApi(this.apiClient.dsApiClient)._delete(accountId, body);
+        // Always refresh a token before interacting with DocuSign eSgintaure app
+        await this.dsClient.refreshAccessToken();
+
+        const usersApi = new UsersApi(this.dsClient.dsApiClient);
+        return executeRequestThrottleOn(usersApi._delete, usersApi, [accountId, body]);
     }
 }

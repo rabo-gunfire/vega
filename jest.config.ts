@@ -44,7 +44,7 @@ export default {
   // An object that configures minimum threshold enforcement for coverage results
   coverageThreshold: {
     "global": {
-      "statements": 98.87
+      "statements": 98.99
     }
   },
 
