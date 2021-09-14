@@ -4,9 +4,9 @@
  * Docusign eSignature app connectivity configuration definition
  */
 export interface DseConfig {
-    apiUrl: string
-    accountId: string
-    clientId: string
-    userId: string
-    privateKey: string
+    apiUrl: string;
+    accountId: string;
+    clientId: string;
+    userId: string;
+    privateKey: string;
 }

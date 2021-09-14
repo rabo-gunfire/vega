@@ -1,11 +1,11 @@
 /* Copyright (C) 2021 SailPoint Technologies, Inc.  All rights reserved. */
 
-import { ConnectorError } from "./connector-error";
+import { ConnectorError } from './connector-error';
 
 /**
  * Thrown when an invalid request is detected. This includes
- * 
- * 1. During any operation when the connector is creating messages to be sent to the managed system, 
+ *
+ * 1. During any operation when the connector is creating messages to be sent to the managed system,
  * but it fails to create a message. This could happen before sending a request to the managed system.
  * for e.g. Due to malformed provisioning policy the connector fails to create a message to be broadcast
  * to the managed system.
@@ -18,8 +18,8 @@ import { ConnectorError } from "./connector-error";
 export class InvalidRequestError extends ConnectorError {
     /**
      * Constructor
-     * @param message 
-     * @param cause 
+     * @param message
+     * @param cause
      */
     constructor(message: string, cause?: Error | undefined) {
         super(message, cause);

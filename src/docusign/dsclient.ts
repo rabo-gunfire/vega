@@ -1,14 +1,14 @@
 /* Copyright (C) 2021 SailPoint Technologies, Inc.  All rights reserved. */
 
-import { ApiClient } from "docusign-esign";
-import moment, { Moment } from "moment";
-import { InvalidResponseError } from "../connectors/invalid-response-error";
-import { convertToConnectorError } from "../tools/error-converter";
-import { logger } from "../tools/logger";
-import { executeRequestThrottleOn } from "./request-throttler";
+import { ApiClient } from 'docusign-esign';
+import moment, { Moment } from 'moment';
+import { InvalidResponseError } from '../connectors/invalid-response-error';
+import { convertToConnectorError } from '../tools/error-converter';
+import { logger } from '../tools/logger';
+import { executeRequestThrottleOn } from './request-throttler';
 
 export class DocuSignClient {
-    private readonly baseUriSuffix: string = '/restapi'
+    private readonly baseUriSuffix: string = '/restapi';
     private readonly authorizationHeader: string = 'Authorization';
     private readonly authenticationScheme: string = 'Bearer';
     private dsClientId: string;
@@ -50,7 +50,7 @@ export class DocuSignClient {
     /**
      * Get user information from the access token.
      * @param accessToken the bearer token to use to authenticate for this call.
-     * 
+     *
      * @returns {any} OAuth UserInfo model.
      */
     async getTokenUserInfo(): Promise<any> {
@@ -89,16 +89,16 @@ export class DocuSignClient {
      * @returns {string} access_token
      */
     private async getToken(): Promise<string> {
-        const jwtLifeSec = 10 * 60;  // requested lifetime for the JWT is 10 min
-        const scopes = [
-            'signature',
-            'impersonation'
-        ];
+        const jwtLifeSec = 10 * 60; // requested lifetime for the JWT is 10 min
+        const scopes = ['signature', 'impersonation'];
 
-        const token = await executeRequestThrottleOn(
-            this.dsApiClient.requestJWTUserToken,
-            this.dsApiClient,
-            [this.dsClientId, this.impersonatedUserGuid, scopes, Buffer.from(this.rsaKey, 'utf8'), jwtLifeSec]);
+        const token = await executeRequestThrottleOn(this.dsApiClient.requestJWTUserToken, this.dsApiClient, [
+            this.dsClientId,
+            this.impersonatedUserGuid,
+            scopes,
+            Buffer.from(this.rsaKey, 'utf8'),
+            jwtLifeSec
+        ]);
 
         this.tokenExpiresAt = moment().add(token.body.expires_in, 's');
 
@@ -121,9 +121,15 @@ export class DocuSignClient {
             now = moment(),
             needToken = noToken || moment(this.tokenExpiresAt).subtract(bufferMin, 'm').isBefore(now);
 
-        if (noToken) { logger.debug('checkToken: Starting up--need a token'); }
-        if (needToken && !noToken) { logger.debug('checkToken: Replacing old token'); }
-        if (!needToken) { logger.debug('checkToken: Using current token'); }
+        if (noToken) {
+            logger.debug('checkToken: Starting up--need a token');
+        }
+        if (needToken && !noToken) {
+            logger.debug('checkToken: Replacing old token');
+        }
+        if (!needToken) {
+            logger.debug('checkToken: Using current token');
+        }
 
         return needToken;
     }

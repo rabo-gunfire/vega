@@ -43,6 +43,8 @@ jobs:
           npm run build
       - name: Linting
         run: npm run lint
+      - name: Prettier check
+        run: npm run prettier
       - name: Unit tests
         run: npm test
       - name: Generate zip artifact

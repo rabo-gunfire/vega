@@ -1,10 +1,10 @@
 /* Copyright (C) 2021 SailPoint Technologies, Inc.  All rights reserved. */
 
-import { ResponseError } from "superagent";
-import { ConnectorError } from "../connectors/connector-error";
-import { InsufficientPermissionError } from "../connectors/insufficient-permission-error";
-import { InvalidConfigurationError } from "../connectors/invalid-configuration-error";
-import { InvalidRequestError } from "../connectors/invalid-request-error";
+import { ResponseError } from 'superagent';
+import { ConnectorError } from '../connectors/connector-error';
+import { InsufficientPermissionError } from '../connectors/insufficient-permission-error';
+import { InvalidConfigurationError } from '../connectors/invalid-configuration-error';
+import { InvalidRequestError } from '../connectors/invalid-request-error';
 
 /**
  * Convert error to an appropriate ConnectorError.
@@ -12,7 +12,8 @@ import { InvalidRequestError } from "../connectors/invalid-request-error";
  * @param {Error | any} err - An error object.
  */
 export const convertToConnectorError = (err: Error | any): void => {
-    if (err instanceof Error) { // http errors
+    if (err instanceof Error) {
+        // http errors
         const e = err as ResponseError;
         if (e.status) {
             if (e.status == 400) {
@@ -32,7 +33,10 @@ export const convertToConnectorError = (err: Error | any): void => {
     } else if (err.code) {
         // wire errors
         if (err.code == 'ENOTFOUND') {
-            throw new InvalidConfigurationError(`Unknown host. message: ${err.message} , errno: ${err.errno} , code: ${err.code}`, err);
+            throw new InvalidConfigurationError(
+                `Unknown host. message: ${err.message} , errno: ${err.errno} , code: ${err.code}`,
+                err
+            );
         }
 
         // RSA key errors

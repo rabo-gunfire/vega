@@ -1,11 +1,6 @@
 /* Copyright (C) 2021 SailPoint Technologies, Inc.  All rights reserved. */
 
-import {
-    Group,
-    GroupInformation,
-    UserInformation,
-    UserInformationList
-} from 'docusign-esign';
+import { Group, GroupInformation, UserInformation, UserInformationList } from 'docusign-esign';
 
 import {
     AttributeChange,
@@ -33,7 +28,7 @@ import { logger } from '../tools/logger';
 import { convertToConnectorError } from '../tools/error-converter';
 
 /**
- * DocuSign eSignature connector 
+ * DocuSign eSignature connector
  */
 export class DseConnector {
     private docuSign: DocuSign;
@@ -43,22 +38,20 @@ export class DseConnector {
 
     /**
      * Constructor to initialize DocuSign client.
-     * 
+     *
      * @param {DseConfig} config - Source configuration
      */
     constructor(config: DseConfig) {
         this.docuSign = new DocuSign(
-            new DocuSignClient(config.apiUrl,
-                config.clientId,
-                config.userId,
-                config.privateKey));
+            new DocuSignClient(config.apiUrl, config.clientId, config.userId, config.privateKey)
+        );
 
         this.accountId = config.accountId;
     }
 
     /**
      * Connection check with DocuSign application.
-     * 
+     *
      * @param {Response<StdTestConnectionOutput>} res - stream to write a response
      */
     async testConnection(res: Response<StdTestConnectionOutput>): Promise<void> {
@@ -92,13 +85,11 @@ export class DseConnector {
 
     /**
      * Reads user account.
-     * 
+     *
      * @param {StdAccountReadInput} input - native identifier information
      * @param {Response<StdAccountReadOutput>} res - stream to write a response
      */
-    async readAccount(input: StdAccountReadInput,
-        res: Response<StdAccountReadOutput>): Promise<void> {
-
+    async readAccount(input: StdAccountReadInput, res: Response<StdAccountReadOutput>): Promise<void> {
         if (!input.identity) {
             throw new InvalidRequestError('Native identifier cannot be empty.');
         }
@@ -109,7 +100,7 @@ export class DseConnector {
 
     /**
      * Aggregate user accounts.
-     * 
+     *
      * @param {Response<StdAccountListOutput>} res - stream to write a response
      */
     async listAccounts(res: Response<StdAccountListOutput>): Promise<void> {
@@ -188,7 +179,7 @@ export class DseConnector {
 
     /**
      * Aggregate entitlements.
-     * 
+     *
      * @param {Response<StdEntitlementListOutput>} res - stream to write a response
      */
     async listEntitlements(res: Response<StdEntitlementListOutput>): Promise<void> {
@@ -253,9 +244,7 @@ export class DseConnector {
      * @param {StdAccountCreateInput} input - New user definition.
      * @param {Response<StdAccountCreateOutput>} res - stream to write a response.
      */
-    async createAccount(input: StdAccountCreateInput,
-        res: Response<StdAccountCreateOutput>): Promise<void> {
-
+    async createAccount(input: StdAccountCreateInput, res: Response<StdAccountCreateOutput>): Promise<void> {
         // Ignore input.identity, it is empty for this connector
 
         // Lets separate entitlement and attribute updates
@@ -289,12 +278,14 @@ export class DseConnector {
         }
 
         if (result.newUsers && result.newUsers.length > 0 && result.newUsers[0].errorDetails) {
-            throw new InvalidRequestError(result.newUsers[0].errorDetails.errorCode + ' - ' + result.newUsers[0].errorDetails.message);
+            throw new InvalidRequestError(
+                result.newUsers[0].errorDetails.errorCode + ' - ' + result.newUsers[0].errorDetails.message
+            );
         }
 
         let userId = '';
         if (result.newUsers && result.newUsers.length > 0 && result.newUsers[0].userId) {
-            userId = (result.newUsers[0].userId) as string;
+            userId = result.newUsers[0].userId as string;
         }
 
         // Entitlement updates, if any
@@ -303,18 +294,17 @@ export class DseConnector {
         let entUpdateWireErrors: any[] = [];
         let numOfEntUpdateErrors = 0;
         if (entitlements.length > 0 && userId) {
-            await Promise.all(entitlements.map(async (group: string) => {
-                return await
-                    this.docuSign
+            await Promise.all(
+                entitlements.map(async (group: string) => {
+                    return await this.docuSign
                         .updateGroupUsers(this.accountId, group, { userInfoList: { users: [{ userId: userId }] } })
-                        .catch((error) => error);
-
-            }))
-                .then((resList) => {
-                    entUpdateErrors = resList.filter((res) => res instanceof Error);
-                    entUpdateUserErrors = resList.filter((res) => (res.users?.length && res.users[0].errorDetails));
-                    entUpdateWireErrors = resList.filter((res) => (res.code && res.errno));
-                });
+                        .catch(error => error);
+                })
+            ).then(resList => {
+                entUpdateErrors = resList.filter(res => res instanceof Error);
+                entUpdateUserErrors = resList.filter(res => res.users?.length && res.users[0].errorDetails);
+                entUpdateWireErrors = resList.filter(res => res.code && res.errno);
+            });
 
             numOfEntUpdateErrors = entUpdateErrors.length + entUpdateUserErrors.length + entUpdateWireErrors.length;
         }
@@ -326,13 +316,13 @@ export class DseConnector {
                 } else {
                     logger.warn(`Some entitlement updates failed for the account [${userId}]`);
                 }
-                entUpdateErrors.forEach((error) => logger.warn({ cause: error }, 'Entitlement update failed.'));
-                entUpdateUserErrors.forEach((error) => logger.warn({ cause: error }, 'Entitlement update failed.'));
-                entUpdateWireErrors.forEach((error) => logger.warn({ cause: error }, 'Entitlement update failed.'));
+                entUpdateErrors.forEach(error => logger.warn({ cause: error }, 'Entitlement update failed.'));
+                entUpdateUserErrors.forEach(error => logger.warn({ cause: error }, 'Entitlement update failed.'));
+                entUpdateWireErrors.forEach(error => logger.warn({ cause: error }, 'Entitlement update failed.'));
             }
 
             // send back a new user
-            res.send(await this.userAccountRead(userId) as StdAccountCreateOutput);
+            res.send((await this.userAccountRead(userId)) as StdAccountCreateOutput);
         } else {
             // safer side ..
             throw new ConnectorError('User creation failed.');
@@ -345,16 +335,14 @@ export class DseConnector {
      * @param {StdAccountUpdateInput} plan - attribute changes
      * @param {Response<StdAccountUpdateOutput>} res - stream to write a response.
      */
-    async updateAccount(plan: StdAccountUpdateInput,
-        res: Response<StdAccountUpdateOutput>): Promise<void> {
-
+    async updateAccount(plan: StdAccountUpdateInput, res: Response<StdAccountUpdateOutput>): Promise<void> {
         if (!plan.identity) {
             throw new InvalidRequestError('Native identifier cannot be empty.');
         }
 
         const userId = plan.identity;
-        const entitlementsUpdates = plan.changes.filter((item) => (item.attribute == this.groupAttr));
-        const attrUpdates = plan.changes.filter((item) => (item.attribute != this.groupAttr));
+        const entitlementsUpdates = plan.changes.filter(item => item.attribute == this.groupAttr);
+        const attrUpdates = plan.changes.filter(item => item.attribute != this.groupAttr);
 
         // Entitlement updates
         let entUpdateErrors: any[] = [];
@@ -362,28 +350,27 @@ export class DseConnector {
         let entUpdateWireErrors: any[] = [];
         let numOfEntUpdateErrors = 0;
         if (entitlementsUpdates.length > 0) {
-            await
-                Promise.all(
-                    entitlementsUpdates.map(async (item: AttributeChange) => {
-                        // Add user to group
-                        if (item.op == 'Add') {
-                            return await
-                                this.docuSign
-                                    .updateGroupUsers(this.accountId, item.value, { userInfoList: { users: [{ userId: userId }] } })
-                                    .catch((error) => error);
-                        }
+            await Promise.all(
+                entitlementsUpdates.map(async (item: AttributeChange) => {
+                    // Add user to group
+                    if (item.op == 'Add') {
+                        return await this.docuSign
+                            .updateGroupUsers(this.accountId, item.value, {
+                                userInfoList: { users: [{ userId: userId }] }
+                            })
+                            .catch(error => error);
+                    }
 
-                        // Remove user from group
-                        return await
-                            this.docuSign
-                                .deleteGroupUsers(this.accountId, item.value, { userInfoList: { users: [{ userId: userId }] } })
-                                .catch((error) => error);
-                    }))
-                    .then((resList) => {
-                        entUpdateErrors = resList.filter((res) => res instanceof Error);
-                        entUpdateUserErrors = resList.filter((res) => (res.users?.length && res.users[0].errorDetails));
-                        entUpdateWireErrors = resList.filter((res) => (res.code && res.errno));
-                    });
+                    // Remove user from group
+                    return await this.docuSign
+                        .deleteGroupUsers(this.accountId, item.value, { userInfoList: { users: [{ userId: userId }] } })
+                        .catch(error => error);
+                })
+            ).then(resList => {
+                entUpdateErrors = resList.filter(res => res instanceof Error);
+                entUpdateUserErrors = resList.filter(res => res.users?.length && res.users[0].errorDetails);
+                entUpdateWireErrors = resList.filter(res => res.code && res.errno);
+            });
 
             numOfEntUpdateErrors = entUpdateErrors.length + entUpdateUserErrors.length + entUpdateWireErrors.length;
         }
@@ -397,68 +384,69 @@ export class DseConnector {
                 userAttrJson[item.attribute] = item.value;
             });
 
-            attrUpdateRes = await
-                this.docuSign
-                    .updateUser(this.accountId, userId, { userInformation: userAttrJson })
-                    .catch((error) => error);
+            attrUpdateRes = await this.docuSign
+                .updateUser(this.accountId, userId, { userInformation: userAttrJson })
+                .catch(error => error);
 
-            if (attrUpdateRes instanceof Error ||
-                (attrUpdateRes.code && attrUpdateRes.errno)) {
+            if (attrUpdateRes instanceof Error || (attrUpdateRes.code && attrUpdateRes.errno)) {
                 numOfAttrUpdateErrors++;
             }
         }
 
         // errors and responses
-        if (entitlementsUpdates.length > 0 && attrUpdates.length == 0) { // if request only for entitlement updates
+        if (entitlementsUpdates.length > 0 && attrUpdates.length == 0) {
+            // if request only for entitlement updates
             if (numOfEntUpdateErrors == entitlementsUpdates.length) {
                 throw new ConnectorError(`All entitlement updates to the account [${userId}] are failed.`);
             } else if (numOfEntUpdateErrors > 0 && numOfEntUpdateErrors < entitlementsUpdates.length) {
                 logger.warn(`Some entitlement updates failed for the account [${userId}]`);
-                entUpdateErrors.forEach((error) => logger.warn({ cause: error }, 'Entitlement update failed.'));
-                entUpdateUserErrors.forEach((error) => logger.warn({ cause: error }, 'Entitlement update failed.'));
-                entUpdateWireErrors.forEach((error) => logger.warn({ cause: error }, 'Entitlement update failed.'));
+                entUpdateErrors.forEach(error => logger.warn({ cause: error }, 'Entitlement update failed.'));
+                entUpdateUserErrors.forEach(error => logger.warn({ cause: error }, 'Entitlement update failed.'));
+                entUpdateWireErrors.forEach(error => logger.warn({ cause: error }, 'Entitlement update failed.'));
             }
 
-            res.send(await this.userAccountRead(userId) as StdAccountUpdateOutput);
-        } else if (entitlementsUpdates.length == 0 && attrUpdates.length > 0) { // if request only for attribute updates
+            res.send((await this.userAccountRead(userId)) as StdAccountUpdateOutput);
+        } else if (entitlementsUpdates.length == 0 && attrUpdates.length > 0) {
+            // if request only for attribute updates
             if (numOfAttrUpdateErrors > 0) {
                 logger.error(`Attribute updates to the account [${userId}] are failed.`);
                 convertToConnectorError(attrUpdateRes);
             }
 
-            res.send(await this.userAccountRead(userId) as StdAccountUpdateOutput);
-        } else if (entitlementsUpdates.length > 0 && attrUpdates.length > 0) { // if mixed request
+            res.send((await this.userAccountRead(userId)) as StdAccountUpdateOutput);
+        } else if (entitlementsUpdates.length > 0 && attrUpdates.length > 0) {
+            // if mixed request
             if (numOfAttrUpdateErrors == 0 && numOfEntUpdateErrors == 0) {
-                res.send(await this.userAccountRead(userId) as StdAccountUpdateOutput);
+                res.send((await this.userAccountRead(userId)) as StdAccountUpdateOutput);
             } else if (numOfAttrUpdateErrors == 0 && numOfEntUpdateErrors > 0) {
                 logger.warn(`Entitlement updates to the account [${userId}] are failed.`);
-                entUpdateErrors.forEach((error) => logger.warn({ cause: error }, 'Entitlement update failed.'));
-                entUpdateUserErrors.forEach((error) => logger.warn({ cause: error }, 'Entitlement update failed.'));
-                entUpdateWireErrors.forEach((error) => logger.warn({ cause: error }, 'Entitlement update failed.'));
+                entUpdateErrors.forEach(error => logger.warn({ cause: error }, 'Entitlement update failed.'));
+                entUpdateUserErrors.forEach(error => logger.warn({ cause: error }, 'Entitlement update failed.'));
+                entUpdateWireErrors.forEach(error => logger.warn({ cause: error }, 'Entitlement update failed.'));
 
-                res.send(await this.userAccountRead(userId) as StdAccountUpdateOutput);
+                res.send((await this.userAccountRead(userId)) as StdAccountUpdateOutput);
             } else if (numOfAttrUpdateErrors > 0 && numOfEntUpdateErrors == 0) {
                 logger.warn(`Attribute updates to the account [${userId}] are failed.`);
                 logger.warn(attrUpdateRes);
 
-                res.send(await this.userAccountRead(userId) as StdAccountUpdateOutput);
+                res.send((await this.userAccountRead(userId)) as StdAccountUpdateOutput);
             } else if (numOfAttrUpdateErrors > 0 && numOfEntUpdateErrors > 0) {
                 if (numOfEntUpdateErrors == entitlementsUpdates.length && numOfAttrUpdateErrors == 1) {
-                    entUpdateErrors.forEach((error) => logger.error({ cause: error }, 'Entitlement update failed.'));
-                    entUpdateUserErrors.forEach((error) => logger.error({ cause: error }, 'Entitlement update failed.'));
-                    entUpdateWireErrors.forEach((error) => logger.error({ cause: error }, 'Entitlement update failed.'));
+                    entUpdateErrors.forEach(error => logger.error({ cause: error }, 'Entitlement update failed.'));
+                    entUpdateUserErrors.forEach(error => logger.error({ cause: error }, 'Entitlement update failed.'));
+                    entUpdateWireErrors.forEach(error => logger.error({ cause: error }, 'Entitlement update failed.'));
                     logger.error(attrUpdateRes);
 
                     throw new ConnectorError(`All updates to the account [${userId}] are failed.`);
                 }
 
                 logger.warn(`Some updates to the account [${userId}] are failed.`);
-                entUpdateErrors.forEach((error) => logger.warn({ cause: error }, 'Entitlement update failed.'));
-                entUpdateUserErrors.forEach((error) => logger.warn({ cause: error }, 'Entitlement update failed.'));
-                entUpdateWireErrors.forEach((error) => logger.warn({ cause: error }, 'Entitlement update failed.'));
+                entUpdateErrors.forEach(error => logger.warn({ cause: error }, 'Entitlement update failed.'));
+                entUpdateUserErrors.forEach(error => logger.warn({ cause: error }, 'Entitlement update failed.'));
+                entUpdateWireErrors.forEach(error => logger.warn({ cause: error }, 'Entitlement update failed.'));
                 logger.warn(attrUpdateRes);
 
-                res.send(await this.userAccountRead(userId) as StdAccountUpdateOutput);
+                res.send((await this.userAccountRead(userId)) as StdAccountUpdateOutput);
             }
         }
     }
@@ -471,16 +459,16 @@ export class DseConnector {
      * @param {StdAccountDeleteInput} input - Native identifier to delete.
      * @param {Response<StdAccountDeleteOutput>} res - stream to write a response.
      */
-    async deleteAccount(input: StdAccountDeleteInput,
-        res: Response<StdAccountDeleteOutput>): Promise<void> {
-
+    async deleteAccount(input: StdAccountDeleteInput, res: Response<StdAccountDeleteOutput>): Promise<void> {
         if (!input.identity) {
             throw new InvalidRequestError('Native identifier cannot be empty.');
         }
 
         let result;
         try {
-            result = await this.docuSign.deleteUser(this.accountId, { userInfoList: { users: [{ userId: input.identity }] } });
+            result = await this.docuSign.deleteUser(this.accountId, {
+                userInfoList: { users: [{ userId: input.identity }] }
+            });
         } catch (error) {
             convertToConnectorError(error);
         }
@@ -495,7 +483,7 @@ export class DseConnector {
 
     /**
      * Read a user.
-     * 
+     *
      * @param {string} userId - native identifier
      * @returns {StdAccountReadOutput} user - user account resource object.
      */

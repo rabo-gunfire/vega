@@ -7,4 +7,5 @@ jest.config.ts
 dist
 node_modules
 test
+coverage
 README.md
