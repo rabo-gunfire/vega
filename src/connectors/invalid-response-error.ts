@@ -1,6 +1,6 @@
 /* Copyright (C) 2021 SailPoint Technologies, Inc.  All rights reserved. */
 
-import { ConnectorError } from "./connector-error";
+import { ConnectorError } from './connector-error';
 
 /**
  * Thrown when an invalid response is detected. This includes
@@ -17,8 +17,8 @@ import { ConnectorError } from "./connector-error";
 export class InvalidResponseError extends ConnectorError {
     /**
      * Constructor
-     * @param message 
-     * @param cause 
+     * @param message
+     * @param cause
      */
     constructor(message: string, cause?: Error | undefined) {
         super(message, cause);

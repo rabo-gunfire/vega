@@ -7,9 +7,9 @@ import {
     UserInformationList,
     UsersApi,
     UsersResponse
-} from "docusign-esign";
-import { DocuSignClient } from "./dsclient";
-import { executeRequestThrottleOn } from "./request-throttler";
+} from 'docusign-esign';
+import { DocuSignClient } from './dsclient';
+import { executeRequestThrottleOn } from './request-throttler';
 
 export class DocuSign {
     /**
@@ -71,7 +71,7 @@ export class DocuSign {
 
     /**
      * Retrieves the list of users for the specified account.
-     * 
+     *
      * @param {string} accountId - The external account number (int) or account ID Guid.
      * @returns {UserInformationList} List of users.
      */
@@ -85,7 +85,7 @@ export class DocuSign {
 
     /**
      * Adds one or more users to an existing group.
-     * 
+     *
      * @param {string} accountId - The external account number (int) or account ID Guid.
      * @param {string} groupId - The ID of the group being accessed.
      * @param {any} body - A user info list to add.
@@ -101,7 +101,7 @@ export class DocuSign {
 
     /**
      * Deletes one or more users from a group.
-     * 
+     *
      * @param {string} accountId - The external account number (int) or account ID Guid.
      * @param {string} groupId - The ID of the group being accessed.
      * @param {any} body - A user info list to add.
@@ -117,7 +117,7 @@ export class DocuSign {
 
     /**
      * Deletes one or more users from a group.
-     * 
+     *
      * @param {string} accountId - The external account number (int) or account ID Guid.
      * @param {string} userId - The user ID of the user being accessed.
      * @param {any} body - A list of attribute changes.
@@ -133,7 +133,7 @@ export class DocuSign {
 
     /**
      * Adds new user to the specified account.
-     * 
+     *
      * @param {string} accountId - The external account number (int) or account ID Guid.
      * @param {any} body - A new user definition.
      * @returns {NewUsersSummary} - New user summary object.

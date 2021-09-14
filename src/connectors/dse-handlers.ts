@@ -24,7 +24,7 @@ import {
     StdEntitlementReadInput,
     StdEntitlementReadOutput,
     StdTestConnectionHandler,
-    StdTestConnectionOutput,
+    StdTestConnectionOutput
 } from '@sailpoint/connector-sdk';
 
 import { ConnectorError } from './connector-error';
@@ -60,16 +60,17 @@ const dseConnector = new DseConnector(config);
 
 /**
  * Connection check handler.
- * 
+ *
  * @param {Context} context - Source configuration.
  * @param {undefined} input - Test connection input parameters.
- * @param {Response<StdTestConnectionOutput>} res - stream to write operation response. 
+ * @param {Response<StdTestConnectionOutput>} res - stream to write operation response.
  * @throws {ConnectorError} error - A generic error thrown when operation fails.
  */
 export const stdTestConnectionHandler: StdTestConnectionHandler = async (
     context: Context,
     input: undefined,
-    res: Response<StdTestConnectionOutput>): Promise<void> => {
+    res: Response<StdTestConnectionOutput>
+): Promise<void> => {
     try {
         await dseConnector.testConnection(res);
     } catch (error) {
@@ -89,17 +90,17 @@ export const stdTestConnectionHandler: StdTestConnectionHandler = async (
 
 /**
  * User account read handler.
- * 
+ *
  * @param {Context} context - Source configuration.
  * @param {StdAccountReadInput} input - User account read input parameters.
- * @param {Response<StdAccountReadOutput>} res - stream to write operation response. 
+ * @param {Response<StdAccountReadOutput>} res - stream to write operation response.
  * @throws {ConnectorError} error - A generic error thrown when operation fails.
  */
 export const stdAccountReadHandler: StdAccountReadHandler = async (
     context: Context,
     input: StdAccountReadInput,
-    res: Response<StdAccountReadOutput>): Promise<void> => {
-
+    res: Response<StdAccountReadOutput>
+): Promise<void> => {
     try {
         await dseConnector.readAccount(input, res);
     } catch (error) {
@@ -119,17 +120,17 @@ export const stdAccountReadHandler: StdAccountReadHandler = async (
 
 /**
  * User account aggregation handler.
- * 
+ *
  * @param {Context} context - Source configuration.
  * @param {undefined} input - none.
- * @param {Response<StdAccountListOutput>} res - stream to write operation responses. 
+ * @param {Response<StdAccountListOutput>} res - stream to write operation responses.
  * @throws {ConnectorError} error - A generic error thrown when operation fails.
  */
 export const stdAccountListHandler: StdAccountListHandler = async (
     context: Context,
     input: undefined,
-    res: Response<StdAccountListOutput>): Promise<void> => {
-
+    res: Response<StdAccountListOutput>
+): Promise<void> => {
     try {
         await dseConnector.listAccounts(res);
     } catch (error) {
@@ -149,17 +150,17 @@ export const stdAccountListHandler: StdAccountListHandler = async (
 
 /**
  * Entitlement read handler.
- * 
+ *
  * @param {Context} context - Source configuration.
  * @param {StdEntitlementReadInput} input - User account read input parameters.
- * @param {Response<StdEntitlementReadOutput>} res - stream to write operation response. 
+ * @param {Response<StdEntitlementReadOutput>} res - stream to write operation response.
  * @throws {ConnectorError} error - A generic error thrown when operation fails.
  */
 export const stdEntitlementReadHandler: StdEntitlementReadHandler = async (
     context: Context,
     input: StdEntitlementReadInput,
-    res: Response<StdEntitlementReadOutput>): Promise<void> => {
-
+    res: Response<StdEntitlementReadOutput>
+): Promise<void> => {
     const error = new ConnectorError('Operation not supported.');
     logger.error(error);
     throw error;
@@ -167,17 +168,17 @@ export const stdEntitlementReadHandler: StdEntitlementReadHandler = async (
 
 /**
  * Entitlement aggregation handler.
- * 
+ *
  * @param {Context} context - Source configuration.
  * @param {undefined} input - none.
- * @param {Response<StdEntitlementListOutput>} res - stream to write operation responses. 
+ * @param {Response<StdEntitlementListOutput>} res - stream to write operation responses.
  * @throws {ConnectorError} error - A generic error thrown when operation fails.
  */
 export const stdEntitlementListHandler: StdEntitlementListHandler = async (
     context: Context,
     input: undefined,
-    res: Response<StdEntitlementListOutput>): Promise<void> => {
-
+    res: Response<StdEntitlementListOutput>
+): Promise<void> => {
     try {
         await dseConnector.listEntitlements(res);
     } catch (error) {
@@ -197,17 +198,17 @@ export const stdEntitlementListHandler: StdEntitlementListHandler = async (
 
 /**
  * User account creation handler.
- * 
+ *
  * @param {Context} context - Source configuration.
  * @param {StdAccountCreateInput} input - User account creation attribute add plan.
- * @param {Response<StdAccountCreateOutput>} res - stream to write operation response. 
+ * @param {Response<StdAccountCreateOutput>} res - stream to write operation response.
  * @throws {ConnectorError} error - A generic error thrown when operation fails.
  */
 export const stdAccountCreateHandler: StdAccountCreateHandler = async (
     context: Context,
     input: StdAccountCreateInput,
-    res: Response<StdAccountCreateOutput>): Promise<void> => {
-
+    res: Response<StdAccountCreateOutput>
+): Promise<void> => {
     logger.info(input, 'Account creation plan.');
 
     try {
@@ -229,17 +230,17 @@ export const stdAccountCreateHandler: StdAccountCreateHandler = async (
 
 /**
  * User account updating handler.
- * 
+ *
  * @param {Context} context - Source configuration.
  * @param {StdAccountCreateInput} input - User account update attribute change plan.
- * @param {Response<StdAccountCreateOutput>} res - stream to write operation response. 
+ * @param {Response<StdAccountCreateOutput>} res - stream to write operation response.
  * @throws {ConnectorError} error - A generic error thrown when operation fails.
  */
 export const stdAccountUpdateHandler: StdAccountUpdateHandler = async (
     context: Context,
     input: StdAccountUpdateInput,
-    res: Response<StdAccountUpdateOutput>): Promise<void> => {
-
+    res: Response<StdAccountUpdateOutput>
+): Promise<void> => {
     logger.info(input, 'Account update plan.');
 
     try {
@@ -261,17 +262,17 @@ export const stdAccountUpdateHandler: StdAccountUpdateHandler = async (
 
 /**
  * User account deletion handler.
- * 
+ *
  * @param {Context} context - Source configuration.
  * @param {StdAccountCreateInput} input - User account deletion input parameters.
- * @param {Response<StdAccountCreateOutput>} res - stream to write operation response. 
+ * @param {Response<StdAccountCreateOutput>} res - stream to write operation response.
  * @throws {ConnectorError} error - A generic error thrown when operation fails.
  */
 export const stdAccountDeleteHandler: StdAccountDeleteHandler = async (
     context: Context,
     input: StdAccountDeleteInput,
-    res: Response<StdAccountDeleteOutput>): Promise<void> => {
-
+    res: Response<StdAccountDeleteOutput>
+): Promise<void> => {
     logger.info(input, 'Account delete plan.');
 
     try {
@@ -290,4 +291,3 @@ export const stdAccountDeleteHandler: StdAccountDeleteHandler = async (
         }
     }
 };
-

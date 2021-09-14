@@ -1,23 +1,15 @@
 /* Copyright (C) 2021 SailPoint Technologies, Inc.  All rights reserved. */
 
-import {
-    ApiClient,
-    GroupsApi,
-    UsersApi
-} from "docusign-esign";
-import moment from "moment";
-import {
-    HTTPError,
-    Response,
-    ResponseError
-} from "superagent";
-import { logger } from "../tools/logger";
+import { ApiClient, GroupsApi, UsersApi } from 'docusign-esign';
+import moment from 'moment';
+import { HTTPError, Response, ResponseError } from 'superagent';
+import { logger } from '../tools/logger';
 
 /**
  * Execute request and provides request throttling controller
  * to ensures the API is fast and available for connector.
  * Requests stays within published request rates defined
- * by the RateLimit header fields from the HTTP response. 
+ * by the RateLimit header fields from the HTTP response.
  *
  * If connector hit a rate limit, it's expected that the connector back off
  * from making requests and try again later when he is permitted to do so.
@@ -33,8 +25,10 @@ import { logger } from "../tools/logger";
  * @returns promise of any
  */
 export const executeRequestThrottleOn = async (
-    func: Function, obj: ApiClient | UsersApi | GroupsApi, args: any[]): Promise<any> => {
-
+    func: Function,
+    obj: ApiClient | UsersApi | GroupsApi,
+    args: any[]
+): Promise<any> => {
     // If request quota exhausted or bursts, then
     // operation will be retried only once.
     const maxRetryAttempts = 1;
@@ -49,8 +43,12 @@ export const executeRequestThrottleOn = async (
 
             if (rlExhausted || rlBurst) {
                 const { httpMethod, httpPath } = getHttpMethodAndPath(res.error as HTTPError);
-                if (rlExhausted) { logger.warn(`Request quota exhausted for request ${httpMethod} ${httpPath}`); }
-                if (rlBurst) { logger.warn(`Burst detected for request ${httpMethod} ${httpPath}`); }
+                if (rlExhausted) {
+                    logger.warn(`Request quota exhausted for request ${httpMethod} ${httpPath}`);
+                }
+                if (rlBurst) {
+                    logger.warn(`Burst detected for request ${httpMethod} ${httpPath}`);
+                }
 
                 if (i < maxRetryAttempts) {
                     const retryAfter = getRetryAfterDuration(res);
@@ -76,7 +74,7 @@ export const executeRequestThrottleOn = async (
  * @param {Response} res - API response
  */
 const hasRateLimitExhausted = (res: Response): boolean => {
-    return (res && res.status === 400 && res.body?.errorCode == 'HOURLY_APIINVOCATION_LIMIT_EXCEEDED');
+    return res && res.status === 400 && res.body?.errorCode == 'HOURLY_APIINVOCATION_LIMIT_EXCEEDED';
 };
 
 /**
@@ -86,7 +84,7 @@ const hasRateLimitExhausted = (res: Response): boolean => {
  * @param {Response} res - API response
  */
 const hasRateLimitBurst = (res: Response): boolean => {
-    return (res && res.status === 400 && res.body.errorCode == 'BURST_APIINVOCATION_LIMIT_EXCEEDED');
+    return res && res.status === 400 && res.body.errorCode == 'BURST_APIINVOCATION_LIMIT_EXCEEDED';
 };
 
 /**
@@ -132,7 +130,7 @@ const getRetryAfterDuration = (res: Response): any => {
  */
 const getHttpMethodAndPath = (error: HTTPError) => {
     return {
-        httpMethod: (error && error.method) ? error.method : '',
-        httpPath: (error && error.path) ? error.path : ''
+        httpMethod: error && error.method ? error.method : '',
+        httpPath: error && error.path ? error.path : ''
     };
 };
