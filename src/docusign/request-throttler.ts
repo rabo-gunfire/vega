@@ -115,7 +115,7 @@ const backOff = async (backOfDurationSec: number): Promise<void> => {
  * @param {Response} res - API response
  * @returns {number} time in seconds that will be used to retry the API call
  */
-const getRetryAfterDuration = (res: Response): any => {
+const getRetryAfterDuration = (res: Response): number => {
     const now = moment(),
         resetMoment = moment.unix(Number(res.headers['x-ratelimit-reset']));
 
