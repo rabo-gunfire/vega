@@ -1,7 +1,7 @@
-# GitHub Connector
-This project is a GitHub connector module used by the SailPoints identity and access governance platforms to manage identity and access
-in GitHub application. The connector connects the SailPoint identity platform to GitHub application securely to load data from and
-provisioning changes to GitHub.
+# DocuSign eSignature Connector
+This project is a DocuSign eSignature connector module used by the SailPoints identity and access governance platforms to manage identity and access
+in DocuSign eSignature application. The connector connects the SailPoint identity platform to DocuSign eSignature application securely to load data from and
+provisioning changes to DocuSign eSignature.
 
 This is a connector that works within SaaS Connectivity 2.0 platform.
 ## Getting Started
@@ -56,4 +56,4 @@ npm run spec
 - [DocuSign eSignature REST API](https://developers.docusign.com/docs/esign-rest-api/reference)
     - [Node.js SDK](https://developers.docusign.com/docs/esign-rest-api/sdk-tools/node) - Connector uses Node.js based SDK to interact with DocuSign application.
     - [JWT Flow](https://developers.docusign.com/platform/auth/jwt) - Connector uses JSON web token flow to obtain access token.
-    - [Rate Limit](https://docs.github.com/en/graphql/overview/resource-limitations) - All DocuSign APIs limit each account to a certain number of requests per hour.
+    - [Rate Limit](https://developers.docusign.com/platform/resource-limits) - All DocuSign APIs limit each account to a certain number of requests per hour.
