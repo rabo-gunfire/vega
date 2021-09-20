@@ -15,6 +15,7 @@ import {
     StdAccountUpdateInput,
     StdAccountUpdateOutput,
     StdEntitlementListOutput,
+    StdEntitlementReadOutput,
     StdTestConnectionOutput
 } from '@sailpoint/connector-sdk';
 
@@ -104,11 +105,10 @@ export class DseConnector {
      * @param {Response<StdAccountListOutput>} res - stream to write a response
      */
     async listAccounts(res: Response<StdAccountListOutput>): Promise<void> {
-        let hasNextPage = true;
-
-        // offset of the first result
-        // start with 0th index
-        let offset = 0;
+        let hasNextPage = true,
+            accountCount = 0,
+            offset = 0; // offset of the first record starts with 0th index
+        const resPromises: Promise<void>[] = [];
 
         while (hasNextPage) {
             const opts = {
@@ -145,36 +145,19 @@ export class DseConnector {
                 hasNextPage = false;
             }
 
-            // Write user records to response stream
-            result.users?.map(async (user: UserInformation) => {
-                res.send({
-                    identity: user.userId,
-                    uuid: user.userId,
-                    attributes: {
-                        userName: user.userName,
-                        userId: user.userId,
-                        userType: user.userType,
-                        isAdmin: user.isAdmin,
-                        isNAREnabled: user.isNAREnabled,
-                        userStatus: user.userStatus,
-                        uri: user.uri,
-                        email: user.email,
-                        firstName: user.firstName,
-                        lastName: user.lastName,
-                        jobTitle: user.jobTitle,
-                        company: user.company,
-                        permissionProfileId: user.permissionProfileId,
-                        permissionProfileName: user.permissionProfileName,
-                        sendActivationOnInvalidLogin: user.sendActivationOnInvalidLogin,
-                        enableConnectForUser: user.enableConnectForUser,
-                        groups: user.groupList?.map((group: Group) => group?.groupId) as string[],
-                        defaultAccountId: user.defaultAccountId,
-                        createdDateTime: user.createdDateTime,
-                        lastLogin: user.lastLogin
-                    }
-                } as StdAccountListOutput);
-            });
+            // Write user records asynchronously to the response stream
+            resPromises.push(
+                ...result.users!.map(async (user: UserInformation) => {
+                    res.send(this.constructUserRO(user) as StdAccountListOutput);
+
+                    accountCount++;
+                })
+            );
         } // loop end
+
+        await Promise.all(resPromises);
+
+        logger.info(`DocuSign eSignature connector stdAccountListHandler sent ${accountCount} accounts.`);
     }
 
     /**
@@ -183,11 +166,10 @@ export class DseConnector {
      * @param {Response<StdEntitlementListOutput>} res - stream to write a response
      */
     async listEntitlements(res: Response<StdEntitlementListOutput>): Promise<void> {
-        let hasNextPage = true;
-
-        // offset of the first result
-        // records start with 0th index
-        let offset = 0;
+        let hasNextPage = true,
+            entitlementCount = 0,
+            offset = 0; // offset of the first record starts with 0th index
+        const resPromises: Promise<void>[] = [];
 
         while (hasNextPage) {
             const opts = {
@@ -221,21 +203,19 @@ export class DseConnector {
                 hasNextPage = false;
             }
 
-            // write each entitlement to the response stream
-            result.groups?.map(async (group: Group) => {
-                res.send({
-                    identity: group.groupId,
-                    uuid: group.groupId,
-                    attributes: {
-                        groupId: group.groupId,
-                        groupName: group.groupName,
-                        groupType: group.groupType,
-                        permissionProfileId: group.permissionProfileId,
-                        usersCount: group.usersCount
-                    }
-                } as StdEntitlementListOutput);
-            });
+            // write group entitlements asynchronously to the response stream
+            resPromises.push(
+                ...result.groups!.map(async (group: Group) => {
+                    res.send(this.constructEntitlementRO(group) as StdEntitlementListOutput);
+
+                    entitlementCount++;
+                })
+            );
         } // loop end
+
+        await Promise.all(resPromises);
+
+        logger.info(`DocuSign eSignature connector stdEntitlementListHandler sent ${entitlementCount} entitlements.`);
     }
 
     /**
@@ -499,34 +479,67 @@ export class DseConnector {
             throw new InvalidResponseError('Found empty response for user read.');
         }
 
-        result = result as UserInformation;
-        const userAccount = {
-            identity: result.userId,
-            uuid: result.userId,
+        return this.constructUserRO(result);
+    }
+
+    /**
+     * Builds user resource object(RO) that will be sent back
+     * to governance platform.
+     *
+     * @param {UserInformation} user - user stub
+     * @returns {StdAccountReadOutput} - resource object (ro)
+     */
+    private constructUserRO(user: UserInformation): StdAccountReadOutput {
+        const ro = {
+            identity: user.userId,
+            uuid: user.userId,
             attributes: {
-                userName: result.userName,
-                userId: result.userId,
-                userType: result.userType,
-                isAdmin: result.isAdmin,
-                isNAREnabled: result.isNAREnabled,
-                userStatus: result.userStatus,
-                uri: result.uri,
-                email: result.email,
-                firstName: result.firstName,
-                lastName: result.lastName,
-                jobTitle: result.jobTitle,
-                company: result.company,
-                permissionProfileId: result.permissionProfileId,
-                permissionProfileName: result.permissionProfileName,
-                sendActivationOnInvalidLogin: result.sendActivationOnInvalidLogin,
-                enableConnectForUser: result.enableConnectForUser,
-                groups: result.groupList?.map((group: Group) => group?.groupId) as string[],
-                defaultAccountId: result.defaultAccountId,
-                createdDateTime: result.createdDateTime,
-                lastLogin: result.lastLogin
+                userName: user.userName,
+                userId: user.userId,
+                userType: user.userType,
+                isAdmin: user.isAdmin,
+                isNAREnabled: user.isNAREnabled,
+                userStatus: user.userStatus,
+                uri: user.uri,
+                email: user.email,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                jobTitle: user.jobTitle,
+                company: user.company,
+                permissionProfileId: user.permissionProfileId,
+                permissionProfileName: user.permissionProfileName,
+                sendActivationOnInvalidLogin: user.sendActivationOnInvalidLogin,
+                enableConnectForUser: user.enableConnectForUser,
+                groups: user.groupList?.map((group: Group) => group?.groupId) as string[],
+                defaultAccountId: user.defaultAccountId,
+                createdDateTime: user.createdDateTime,
+                lastLogin: user.lastLogin
             }
         } as StdAccountReadOutput;
 
-        return userAccount;
+        return ro;
+    }
+
+    /**
+     * Builds entitlement resource object(RO) that will be sent back
+     * to governance platform.
+     *
+     * @param {Group} group - group stub
+     * @returns {StdEntitlementReadOutput} - resource object (ro)
+     */
+    private constructEntitlementRO(group: Group): StdEntitlementReadOutput {
+        const ro = {
+            identity: group.groupId,
+            uuid: group.groupId,
+            attributes: {
+                groupId: group.groupId,
+                groupName: group.groupName,
+                groupType: group.groupType,
+                permissionProfileId: group.permissionProfileId,
+                usersCount: group.usersCount
+            }
+        } as StdEntitlementReadOutput;
+
+        return ro;
     }
 }
