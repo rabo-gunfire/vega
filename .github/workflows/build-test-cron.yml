@@ -9,7 +9,7 @@ on:
 
 jobs:
   build-unittest:
-    name: build-test-pack-node${{ matrix.node }}
+    name: build-and-test-node${{ matrix.node }}
     runs-on: ubuntu-latest
     defaults:
        run:
