@@ -1,6 +1,6 @@
 # Copyright (C) 2021 SailPoint Technologies, Inc.  All rights reserved.
 
-name: PRB
+name: prb
 
 on:
   pull_request:
@@ -8,7 +8,7 @@ on:
       - master
 jobs:
   build-unittest:
-    name: Build Unit Test and ZIP Using Node.js ${{ matrix.node }}
+    name: build-test-pack-node${{ matrix.node }}
     runs-on: ubuntu-latest
     defaults:
        run:
