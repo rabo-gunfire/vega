@@ -1,0 +1,57 @@
+# Copyright (C) 2021 SailPoint Technologies, Inc.  All rights reserved.
+
+name: build-and-test
+
+on:
+  schedule:
+    # job runs at 10 am each Monday
+    - cron: '0 10 * * 1'
+
+jobs:
+  build-unittest:
+    name: build-test-pack-node${{ matrix.node }}
+    runs-on: ubuntu-latest
+    defaults:
+       run:
+         shell: bash
+
+    strategy:
+      matrix:
+        node: [ '16' ]
+
+    steps:
+      - name: Workflow context details
+        run: |
+          echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
+          echo "💡 Job name is ${{ github.job }} and workflow name is ${{ github.workflow }}"
+          echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
+          echo "🔎 The name of branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
+      - name: Check out repository
+        uses: actions/checkout@v2.3.4
+        with:
+          persist-credentials: false
+      - name: Repository clone confirmation
+        run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
+      - name: Setup Node.js ${{ matrix.node }} runtime
+        uses: actions/setup-node@v2.4.0
+        with:
+          node-version: ${{ matrix.node }}
+      - name: Use HTTP instead of SSH for the saas connector sdk repository access
+        run: git config --global url."https://${{ secrets.CONNECTOR_SDK_TOKEN }}@github.com/".insteadOf ssh://git@github.com/
+      - name: Clean install dependencies and build
+        run: |
+          npm ci
+          npm run build
+      - name: Linting
+        run: npm run lint
+      - name: Prettier check
+        run: npm run prettier
+      # Checks the current version of the installed packages in
+      # the project against known vulnerabilities reported on
+      # the public npm registry.
+      - name: Run a security audit
+        run: npm run audit-check
+      - name: Unit tests
+        run: npm test
+      - name: Generate zip artifact
+        run: npm run pack-zip:ncc
