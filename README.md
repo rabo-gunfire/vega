@@ -4,6 +4,7 @@ in DocuSign eSignature application. The connector connects the SailPoint identit
 from and provisioning changes to DocuSign eSignature.
 
 This is a connector that works within SaaS Connectivity 2.0 platform.
+
 ## Getting Started
 
 #### Prerequisites
@@ -36,7 +37,7 @@ npm run pack-zip
 
 The command generates a zip artifact in the `dist` directory.
 
-## Dev Aid
+## Testing
 
 #### Unit Tests
 Issue the following command to execute all tests:
@@ -44,6 +45,8 @@ Issue the following command to execute all tests:
 ```
 npm run test
 ```
+Unit tests execution generates code coverage report in the `coverage` directory.
+
 #### Integration Tests
 Issue the following command to execute all tests:
 
