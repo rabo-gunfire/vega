@@ -28,7 +28,8 @@
     "prebuild:ncc": "npm run clean",
     "build:ncc": "npx ncc build ./src/index.ts -o ./dist -m -s -C",
     "prepack-zip:ncc": "npm ci && npm run build:ncc",
-    "pack-zip:ncc": "(cd ./dist && zip $npm_package_name-$npm_package_version.zip ./index.js ./index.js.map ./sourcemap-register.js)"
+    "pack-zip:ncc": "(cd ./dist && zip $npm_package_name-$npm_package_version.zip ./index.js ./index.js.map ./sourcemap-register.js)",
+    "audit-check": "npm audit --audit-level=moderate"
   },
   "dependencies": {
     "@sailpoint/connector-sdk": "git+ssh://git@github.com/sailpoint/saas-connector-sdk-js.git#main",
