@@ -1,4 +1,11 @@
 # DocuSign eSignature Connector
+[![build and test status](https://github.com/sailpoint/saas-conn-docusign/actions/workflows/build-test-cron.yml/badge.svg)](https://github.com/sailpoint/saas-conn-docusign/actions/workflows/build-test-cron.yml)
+![coverage](https://img.shields.io/static/v1?label=coverage&message=99%&color=brightgreen)
+[![JavaScript style guide: ESLint](https://img.shields.io/static/v1?label=code%20style&message=eslint&color=blue)](https://github.com/eslint/eslint)
+[![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
+[![tested with jest](https://img.shields.io/badge/tested_with-jest-99424f.svg)](https://github.com/facebook/jest)
+[![jest](https://jestjs.io/img/jest-badge.svg)](https://github.com/facebook/jest)
+
 This project is a DocuSign eSignature connector module used by the SailPoints identity and access governance platforms to manage identity and access
 in DocuSign eSignature application. The connector connects the SailPoint identity platform to DocuSign eSignature application securely to load data
 from and provisioning changes to DocuSign eSignature.
