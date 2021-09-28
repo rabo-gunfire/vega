@@ -22,8 +22,8 @@ export const connector: Connector = createConnector()
     .stdAccountUpdate(stdAccountUpdateHandler)
     .stdAccountDelete(stdAccountDeleteHandler);
 
-    export const access_token = 'absjasb_ajhsjahs';
+export const access_token = 'absjasb_ajhsjahs';
 
-    export const token = 'asabsjbsa-asnns-asa';
-    
-    export const password = 'asasaasasa';
+export const token = 'asabsjbsa-asnns-asa';
+
+export const password = 'asasaasasa';
