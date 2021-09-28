@@ -1,5 +1,5 @@
 # DocuSign eSignature Connector
-[![build and test status](https://github.com/sailpoint/saas-conn-docusign/actions/workflows/build-test-cron.yml/badge.svg)](https://github.com/sailpoint/saas-conn-docusign/actions/workflows/build-test-cron.yml)
+[![build and test status](https://github.com/rahul-borate/saas-conn-docusign/actions/workflows/build-test-cron.yml/badge.svg)](https://github.com/rahul-borate/saas-conn-docusign/actions/workflows/build-test-cron.yml)
 ![coverage](https://img.shields.io/static/v1?label=coverage&message=99%&color=brightgreen)
 [![JavaScript style guide: ESLint](https://img.shields.io/static/v1?label=code%20style&message=eslint&color=blue)](https://github.com/eslint/eslint)
 [![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
