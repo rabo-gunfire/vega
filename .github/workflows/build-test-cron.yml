@@ -4,8 +4,8 @@ name: build-and-test
 
 on:
   schedule:
-    # job runs at 10 am each Monday
-    - cron: '*/5 * * * *'
+    # job runs at each hour
+    - cron: '*/59 * * * *'
 
 jobs:
   build-unittest:
