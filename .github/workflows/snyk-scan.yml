@@ -3,7 +3,8 @@ name: vulnerability-scan
 on:
   push:
   pull_request:
-    - master
+    branches:
+      - master
 
 jobs:
   security:
