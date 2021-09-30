@@ -55,10 +55,3 @@ Issue the following command to execute all tests:
 ```
 npm run spec
 ```
-
-## References
-
-- [DocuSign eSignature REST API](https://developers.docusign.com/docs/esign-rest-api/reference)
-    - [Node.js SDK](https://developers.docusign.com/docs/esign-rest-api/sdk-tools/node) - Connector uses Node.js based SDK to interact with DocuSign application.
-    - [JWT Flow](https://developers.docusign.com/platform/auth/jwt) - Connector uses JSON web token flow to obtain access token.
-    - [Rate Limit](https://developers.docusign.com/platform/resource-limits) - All DocuSign APIs limit each account to a certain number of requests per hour.
