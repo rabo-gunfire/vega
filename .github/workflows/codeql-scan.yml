@@ -1,4 +1,4 @@
-name: codeql-vulnerability-scan
+name: codeql-analysis
 
 on:
   push:
@@ -10,6 +10,10 @@ jobs:
   codeql-security:
     name: codeql-security-check
     runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
     defaults:
        run:
          shell: bash
