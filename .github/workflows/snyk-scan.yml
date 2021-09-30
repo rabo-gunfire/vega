@@ -1,0 +1,29 @@
+name: vulnerability-scan
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  security:
+    name: snyk-security-check
+    runs-on: ubuntu-latest
+    defaults:
+       run:
+         shell: bash
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2.3.4
+        with:
+          persist-credentials: false
+      - uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --severity-threshold=medium
+ 
