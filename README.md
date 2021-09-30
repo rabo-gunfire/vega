@@ -12,7 +12,7 @@ from and provisioning changes to DocuSign eSignature.
 
 This is a connector that works within SaaS Connectivity 2.0 platform.
 
-## Getting Started with
+## Getting Started withx
 
 #### Prerequisites
 - [Node.js >= 16.2.0](https://nodejs.org/en/download/releases/)
