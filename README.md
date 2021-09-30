@@ -6,11 +6,6 @@
 [![tested with jest](https://img.shields.io/badge/tested_with-jest-99424f.svg)](https://github.com/facebook/jest)
 [![jest](https://jestjs.io/img/jest-badge.svg)](https://github.com/facebook/jest)
 
-This project is a DocuSign eSignature connector module used by the SailPoints identity and access governance platforms to manage identity and access
-in DocuSign eSignature application. The connector connects the SailPoint identity platform to DocuSign eSignature application securely to load data
-from and provisioning changes to DocuSign eSignature.
-
-This is a connector that works within SaaS Connectivity 2.0 platform.
 
 ## Getting Started
 
