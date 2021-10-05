@@ -46,7 +46,7 @@ jobs:
       - name: Prettier check
         run: npm run prettier
       - name: Slack channel notify
-        uses: ./.github/actions/slack-notify-action/
+        uses: ./.github/actions/slack-notify-action
         if: always()
         with:
           repo-token: ${{ secrets.REPO_TOKEN }}
