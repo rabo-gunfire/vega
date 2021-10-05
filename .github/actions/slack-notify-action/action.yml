@@ -8,6 +8,6 @@ inputs:
   channel:
     description: 'Channel where messages to be sent'
 runs:
-  using: 'node14'
+  using: 'node16'
   main: 'index.js'
  
