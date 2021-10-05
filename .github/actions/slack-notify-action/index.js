@@ -14609,15 +14609,18 @@ function fixResponseChunkedTransferBadEnding(request, errorCallback) {
 
 
 const getPullRequest = async (password, repo, pull_number) => {
+  console.log(`getPullRequest => ${password} , ${repo} , ${pull_number}`);
   const github = (0,github_0/* octokit */.K)(password);
 
   const pr = await github.getPR(repo, pull_number);
 
+  console.log(` getPullRequest => pr => ${pr}`);
   return pr;
 };
 
 (async () => {
   console.log('# action started #');
+
   try {
     const status = (0,core.getInput)("job-status");
     console.log(`Job status => ${status}`);
@@ -14644,7 +14647,7 @@ const getPullRequest = async (password, repo, pull_number) => {
     let eventInfo = (0,core.getInput)("event");
     const jobName = github.context.job;
 
-    console.log(`Job status => ${jobName}`);
+    console.log(`Job name => ${jobName}`);
 
     let content;
     switch (github.context.eventName) {
@@ -14653,8 +14656,7 @@ const getPullRequest = async (password, repo, pull_number) => {
         if (github.context.ref.includes("tags")) {
           content = `New tag: *${github.context.ref.split("/").splice(-1)[0]}*`;
         } else {
-          content = `Push on *${branch}*. \n Commit: ${JSON.parse(eventInfo).head_commit.url
-            }`;
+          content = `Push on *${branch}*. \n Commit: ${JSON.parse(eventInfo).head_commit.url}`;
         }
         break;
 
@@ -14665,10 +14667,9 @@ const getPullRequest = async (password, repo, pull_number) => {
           github.context.repo.repo,
           github.context.payload.pull_request.number
         );
-        content = `Pull Request #${github.context.payload.pull_request.number
-          }: ${pr.title} \n *${(0,core.getInput)("head_ref")}* -> *${(0,core.getInput)(
-            "base_ref"
-          )}* \n ${github.context.payload.pull_request.html_url}`;
+        console.log(`pr => ${pr}`);
+        content = `Pull Request #${github.context.payload.pull_request.number}: ${pr.title} \n *${(0,core.getInput)("head_ref")}* -> *${(0,core.getInput)("base_ref")}* \n ${github.context.payload.pull_request.html_url}`;
+        console.log(`pr => ${content}`);
         break;
 
       case "workflow_dispatch":
@@ -14744,6 +14745,8 @@ const getPullRequest = async (password, repo, pull_number) => {
         Accept: "application/json",
       }
     });
+
+    console.log(`API res => ${res}`);
 
     if (!res.ok) {
       throw new Error(`Server error ${res.status}`);
