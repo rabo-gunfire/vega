@@ -12727,11 +12727,12 @@ const octokit = (token) => {
 
   async function getPR(repo, pull_number) {
     console.log(`getPR => client => ${client}`);
-    const object = await client.pulls.get({
+    const object = await client.request('GET /repos/{owner}/{repo}/pulls/{pull_number}', {
       owner: org,
       repo: repo,
       pull_number: pull_number,
     });
+    
     return object.data;
   }
 
