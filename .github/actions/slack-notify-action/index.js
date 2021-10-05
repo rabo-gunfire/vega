@@ -12498,14 +12498,6 @@ function wrappy (fn, cb) {
 
 /***/ }),
 
-/***/ 9288:
-/***/ ((module) => {
-
-module.exports = eval("require")("./dist/index.js");
-
-
-/***/ }),
-
 /***/ 2877:
 /***/ ((module) => {
 
@@ -14640,10 +14632,7 @@ function fixResponseChunkedTransferBadEnding(request, errorCallback) {
 	});
 }
 
-// EXTERNAL MODULE: ./node_modules/@vercel/ncc/dist/ncc/@@notfound.js?./dist/index.js
-var _notfounddist = __nccwpck_require__(9288);
 ;// CONCATENATED MODULE: ./index.js
-
 
 
 
