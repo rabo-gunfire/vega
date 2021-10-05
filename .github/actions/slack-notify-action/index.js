@@ -12726,6 +12726,7 @@ const octokit = (token) => {
   const client = (0,github.getOctokit)(token);
 
   async function getPR(repo, pull_number) {
+    console.log(`getPR => client => ${client}`);
     const object = await client.pulls.get({
       owner: org,
       repo: repo,
@@ -14609,7 +14610,7 @@ const getPullRequest = async (password, repo, pull_number) => {
 
   const pr = await github.getPR(repo, pull_number);
 
-  console.log(` getPullRequest => pr => ${pr}`);
+  console.log(`getPullRequest => pr => ${pr}`);
   return pr;
 };
 
