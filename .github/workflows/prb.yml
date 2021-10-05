@@ -55,7 +55,7 @@ jobs:
       - name: Generate zip artifact
         run: npm run pack-zip:ncc
       - name: Slack channel notify
-        uses: ./.github/actions/slack-notify-action/
+        uses: ./.github/actions/slack-notify-action
         if: always()
         with:
           job-status: ${{ job.status }}
