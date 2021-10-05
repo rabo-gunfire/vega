@@ -12719,35 +12719,6 @@ module.exports = require("zlib");
 /******/ 	}
 /******/ 	
 /************************************************************************/
-/******/ 	/* webpack/runtime/compat get default export */
-/******/ 	(() => {
-/******/ 		// getDefaultExport function for compatibility with non-harmony modules
-/******/ 		__nccwpck_require__.n = (module) => {
-/******/ 			var getter = module && module.__esModule ?
-/******/ 				() => (module['default']) :
-/******/ 				() => (module);
-/******/ 			__nccwpck_require__.d(getter, { a: getter });
-/******/ 			return getter;
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/define property getters */
-/******/ 	(() => {
-/******/ 		// define getter functions for harmony exports
-/******/ 		__nccwpck_require__.d = (exports, definition) => {
-/******/ 			for(var key in definition) {
-/******/ 				if(__nccwpck_require__.o(definition, key) && !__nccwpck_require__.o(exports, key)) {
-/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
-/******/ 				}
-/******/ 			}
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
-/******/ 	(() => {
-/******/ 		__nccwpck_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
-/******/ 	})();
-/******/ 	
 /******/ 	/* webpack/runtime/make namespace object */
 /******/ 	(() => {
 /******/ 		// define __esModule on exports
@@ -12773,7 +12744,6 @@ __nccwpck_require__.r(__webpack_exports__);
 
 // EXTERNAL MODULE: ./node_modules/@actions/core/lib/core.js
 var core = __nccwpck_require__(2186);
-var core_default = /*#__PURE__*/__nccwpck_require__.n(core);
 // EXTERNAL MODULE: ./node_modules/@actions/github/lib/github.js
 var github = __nccwpck_require__(5438);
 // EXTERNAL MODULE: ./github.js
@@ -14647,10 +14617,10 @@ const getPullRequest = async (password, repo, pull_number) => {
 };
 
 (async () => {
-  core_default().info('# action started #');
+  console.log('# action started #');
   try {
     const status = (0,core.getInput)("job-status");
-    core_default().info(`Job status => ${status}`);
+    console.log(`Job status => ${status}`);
 
     let state =
       status === "success"
@@ -14674,7 +14644,7 @@ const getPullRequest = async (password, repo, pull_number) => {
     let eventInfo = (0,core.getInput)("event");
     const jobName = github.context.job;
 
-    core_default().info(`Job status => ${jobName}`);
+    console.log(`Job status => ${jobName}`);
 
     let content;
     switch (github.context.eventName) {
@@ -14689,7 +14659,7 @@ const getPullRequest = async (password, repo, pull_number) => {
         break;
 
       case "pull_request":
-        core_default().info(`# pull request case #`);
+        console.log(`# pull request case #`);
         let pr = await getPullRequest(
           (0,core.getInput)("repo-token"),
           github.context.repo.repo,
@@ -14763,7 +14733,7 @@ const getPullRequest = async (password, repo, pull_number) => {
       ],
     });
 
-    core_default().info('## before fetch ##')
+    console.log('## before fetch ##')
     const res = await fetch("https://slack.com/api/chat.postMessage", {
       method: "POST",
       body: postData,
