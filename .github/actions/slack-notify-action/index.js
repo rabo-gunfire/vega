@@ -1,35 +1,6 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 6535:
-/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
-
-const github = __nccwpck_require__(5438);
-
-const org = "rabo-gunfire";
-
-const octokit = (token) => {
-  const client = github.getOctokit(token);
-
-  async function getPR(repo, pull_number) {
-    const object = await client.pulls.get({
-      owner: org,
-      repo: repo,
-      pull_number: pull_number,
-    });
-    return object.data;
-  }
-
-  return {
-    getPR,
-  };
-};
-
-exports.K = octokit;
-
-
-/***/ }),
-
 /***/ 7351:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -12746,8 +12717,31 @@ __nccwpck_require__.r(__webpack_exports__);
 var core = __nccwpck_require__(2186);
 // EXTERNAL MODULE: ./node_modules/@actions/github/lib/github.js
 var github = __nccwpck_require__(5438);
-// EXTERNAL MODULE: ./github.js
-var github_0 = __nccwpck_require__(6535);
+;// CONCATENATED MODULE: ./github.js
+
+
+const org = "rabo-gunfire";
+
+const octokit = (token) => {
+  const client = (0,github.getOctokit)(token);
+
+  async function getPR(repo, pull_number) {
+    const object = await client.pulls.get({
+      owner: org,
+      repo: repo,
+      pull_number: pull_number,
+    });
+    return object.data;
+  }
+
+  return {
+    getPR
+  };
+};
+
+const _octokit = octokit;
+
+
 // EXTERNAL MODULE: external "http"
 var external_http_ = __nccwpck_require__(8605);
 // EXTERNAL MODULE: external "https"
@@ -14610,7 +14604,8 @@ function fixResponseChunkedTransferBadEnding(request, errorCallback) {
 
 const getPullRequest = async (password, repo, pull_number) => {
   console.log(`getPullRequest => ${password} , ${repo} , ${pull_number}`);
-  const github = (0,github_0/* octokit */.K)(password);
+  const github = _octokit(password);
+  console.log(`getPullRequest => github => ${github}`);
 
   const pr = await github.getPR(repo, pull_number);
 
