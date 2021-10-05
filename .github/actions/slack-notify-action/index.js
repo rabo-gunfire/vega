@@ -1,7 +1,7 @@
 const core = require("@actions/core");
 const fetch = require("node-fetch");
 
-(aysnc () => {
+(async () => {
   try {
     const payload = {
       channel: `${core.getInput("channel")}`,
@@ -14,11 +14,11 @@ const fetch = require("node-fetch");
               text: {
                 type: "mrkdwn",
                 text: `Github Action: *${status === "success" ? "SUCCESS" : status === "failure" ? "FAILURE" : "CANCELLED"}*`,
-              },
-            },
-          ],
-        },
-      ],
+              }
+            }
+          ]
+        }
+      ]
     };
 
     const rest = await fetch("https://slack.com/api/chat.postMessage", {
@@ -29,7 +29,7 @@ const fetch = require("node-fetch");
         "Content-Length": payload.length,
         Authorization: `Bearer ${core.getInput("slack-bot-token")}`,
         Accept: "application/json",
-      },
+      }
     });
     if (!res.ok) {
       throw new Error(`Server error ${res.status}`);
