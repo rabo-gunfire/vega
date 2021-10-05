@@ -49,7 +49,7 @@ jobs:
         uses: ./.github/actions/slack-notify-action
         if: always()
         with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          repo-token: ${{ secrets.REPO_TOKEN }}
           event: ${{ toJson(github.event) }}
           head_ref: ${{ github.head_ref }}
           base_ref: ${{ github.base_ref }}
