@@ -1,6 +1,14 @@
 name: 'Notify Job Status to Slack'
 description: 'Notify a job status to a specific Slack channel.'
 inputs:
+  repo-token:
+    description: 'secret repo token'
+  event:
+    description: 'event info'
+  head_ref:
+    description: 'head ref branch'
+  base_ref:
+    description: 'base ref branch'
   job-status:
     description: 'job status'
   slack-bot-token:
@@ -10,4 +18,3 @@ inputs:
 runs:
   using: 'node12'
   main: 'index.js'
- 
