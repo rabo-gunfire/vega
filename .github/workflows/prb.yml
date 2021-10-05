@@ -54,3 +54,10 @@ jobs:
         run: npm test
       - name: Generate zip artifact
         run: npm run pack-zip:ncc
+      - name: Slack channel notify
+        uses: ./.github/actions/slack-notify-action
+        if: always()
+        with:
+          job-status: ${{ job.status }}
+          slack-bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
+          channel: 'C02GX2NE68H'
