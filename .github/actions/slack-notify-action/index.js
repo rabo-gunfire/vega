@@ -7877,6 +7877,7 @@ const fetch = __nccwpck_require__(843);
 (async () => {
   core.info("## Action started ##");
   try {
+    const status = core.getInput("job-status")
     const payload = {
       channel: `${core.getInput("channel")}`,
       attachments: [
