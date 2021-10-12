@@ -8489,7 +8489,7 @@ __nccwpck_require__.r(node_fetch_src_namespaceObject);
 // EXTERNAL MODULE: ./node_modules/@actions/core/lib/core.js
 var lib_core = __nccwpck_require__(2186);
 // EXTERNAL MODULE: ./node_modules/@actions/github/lib/github.js
-var lib_github = __nccwpck_require__(5438);
+var github = __nccwpck_require__(5438);
 // EXTERNAL MODULE: external "http"
 var external_http_ = __nccwpck_require__(8605);
 // EXTERNAL MODULE: external "https"
@@ -8864,11 +8864,11 @@ const slackChat = async (payload) => {
 // entry point for plugin 
 (async () => {
   try {
-    const { payload, ref, workflow, eventName, runId } = github.context;
-    const { owner, repo } = lib_github.context.repo;
+    const { payload, ref, workflow, eventName, runId } = github.github.context;
+    const { owner, repo } = github.context.repo;
     const event = eventName;
     const branch = event === 'pull_request' ? payload.pull_request.head.ref : ref.replace('refs/heads/', '');
-    const sha = event === 'pull_request' ? payload.pull_request.head.sha : github.context.sha;
+    const sha = event === 'pull_request' ? payload.pull_request.head.sha : github.github.context.sha;
 
     const referenceLink =
       event === 'pull_request'
