@@ -19,7 +19,7 @@
 npm install
 ```
 
-#### Build a Project
+#### Build a Project//
 
 Simply issuing the command below from the root directory will trigger the build task:
 
