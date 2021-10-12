@@ -14635,7 +14635,7 @@ const slackChat = async (payload) => {
   try {
     console.log('github property details', (github_default()));
     console.log('github repo details', github.context.repo);
-    const { payload, ref, workflow, eventName, runId } = github.context;
+    const { payload, ref, workflow, eventName, runId, actor } = github.context;
     const { owner, repo } = github.context.repo;
     const event = eventName;
     const branch = event === 'pull_request' ? payload.pull_request.head.ref : ref.replace('refs/heads/', '');
@@ -14656,7 +14656,7 @@ const slackChat = async (payload) => {
 
     const jobStatus = (0,core.getInput)("status");
     let status = jobStatus === "success" ? "SUCCESS" : jobStatus === "failure" ? "FAILURE" : "CANCELLED";
-    let color = jobStatus === "success" ? "#2e993e" : jobStatus === "failure" ? "#bd0f26" : "#d29d0c";
+    let color = jobStatus === "success" ? "#35b147" : jobStatus === "failure" ? "#d41111" : "#d9a20d";
     const channel = (0,core.getInput)("channel").replace(/[#@]/g, '');
 
     const postData = JSON.stringify({
@@ -14684,6 +14684,11 @@ const slackChat = async (payload) => {
             {
               title: 'Event',
               value: event,
+              short: true,
+            },
+            {
+              title: 'Author',
+              value: `<https://github.com/${actor} | ${actor}>`,
               short: true,
             }
           ],
