@@ -12744,7 +12744,6 @@ __nccwpck_require__.r(__webpack_exports__);
 
 // EXTERNAL MODULE: ./node_modules/@actions/core/lib/core.js
 var core = __nccwpck_require__(2186);
-var core_default = /*#__PURE__*/__nccwpck_require__.n(core);
 // EXTERNAL MODULE: ./node_modules/@actions/github/lib/github.js
 var github = __nccwpck_require__(5438);
 var github_default = /*#__PURE__*/__nccwpck_require__.n(github);
@@ -14621,7 +14620,7 @@ const slackChat = async (payload) => {
     headers: {
       "Content-Type": "application/json; charset=utf-8",
       "Content-Length": payload.length,
-      Authorization: `Bearer ${core_default().getInput("slack-bot-token")}`,
+      Authorization: `Bearer ${(0,core.getInput)("slack-bot-token")}`,
       Accept: "application/json"
     }
   });
@@ -14655,10 +14654,10 @@ const slackChat = async (payload) => {
           short: true,
         };
 
-    const jobStatus = core_default().getInput("status");
+    const jobStatus = (0,core.getInput)("status");
     let status = jobStatus === "success" ? "SUCCESS" : jobStatus === "failure" ? "FAILURE" : "CANCELLED";
     let color = jobStatus === "success" ? "#2e993e" : jobStatus === "failure" ? "#bd0f26" : "#d29d0c";
-    const channel = core_default().getInput("channel").replace(/[#@]/g, '');
+    const channel = (0,core.getInput)("channel").replace(/[#@]/g, '');
 
     const postData = JSON.stringify({
       channel: channel,
@@ -14701,7 +14700,7 @@ const slackChat = async (payload) => {
     await slackChat(postData);
 
   } catch (error) {
-    core_default().setFailed(error.message);
+    (0,core.setFailed)(error.message);
   }
 })();
 
