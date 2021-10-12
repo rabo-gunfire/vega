@@ -9,10 +9,10 @@ inputs:
     description: 'head ref branch'
   base_ref:
     description: 'base ref branch'
-  job-status:
-    description: 'job status'
   slack-bot-token:
     description: 'Bot token used to send messages'
+  status:
+    description: 'job status'
   channel:
     description: 'Channel where messages to be sent'
 runs:
