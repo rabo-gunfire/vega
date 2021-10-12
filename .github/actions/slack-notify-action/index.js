@@ -8459,35 +8459,6 @@ module.exports = require("zlib");
 /******/ 	}
 /******/ 	
 /************************************************************************/
-/******/ 	/* webpack/runtime/compat get default export */
-/******/ 	(() => {
-/******/ 		// getDefaultExport function for compatibility with non-harmony modules
-/******/ 		__nccwpck_require__.n = (module) => {
-/******/ 			var getter = module && module.__esModule ?
-/******/ 				() => (module['default']) :
-/******/ 				() => (module);
-/******/ 			__nccwpck_require__.d(getter, { a: getter });
-/******/ 			return getter;
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/define property getters */
-/******/ 	(() => {
-/******/ 		// define getter functions for harmony exports
-/******/ 		__nccwpck_require__.d = (exports, definition) => {
-/******/ 			for(var key in definition) {
-/******/ 				if(__nccwpck_require__.o(definition, key) && !__nccwpck_require__.o(exports, key)) {
-/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
-/******/ 				}
-/******/ 			}
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
-/******/ 	(() => {
-/******/ 		__nccwpck_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
-/******/ 	})();
-/******/ 	
 /******/ 	/* webpack/runtime/make namespace object */
 /******/ 	(() => {
 /******/ 		// define __esModule on exports
@@ -8517,9 +8488,6 @@ __nccwpck_require__.r(node_fetch_src_namespaceObject);
 
 // EXTERNAL MODULE: ./node_modules/@actions/core/lib/core.js
 var lib_core = __nccwpck_require__(2186);
-// EXTERNAL MODULE: ./node_modules/@actions/github/lib/github.js
-var github = __nccwpck_require__(5438);
-var github_default = /*#__PURE__*/__nccwpck_require__.n(github);
 // EXTERNAL MODULE: external "http"
 var external_http_ = __nccwpck_require__(8605);
 // EXTERNAL MODULE: external "https"
@@ -8866,7 +8834,7 @@ function fixResponseChunkedTransferBadEnding(request, errorCallback) {
 /* Copyright (C) 2021 SailPoint Technologies, Inc.  All rights reserved. */
 
 
-
+const github = __nccwpck_require__(5438);
 
 
 /**
@@ -8894,11 +8862,12 @@ const slackChat = async (payload) => {
 // entry point for plugin 
 (async () => {
   try {
-    const { payload, ref, workflow, eventName, runId } = (github_default()).context;
-    const { owner, repo } = (github_default()).context.repo;
+    console.log('github property details', github);
+    const { payload, ref, workflow, eventName, runId } = github.context;
+    const { owner, repo } = github.context.repo;
     const event = eventName;
     const branch = event === 'pull_request' ? payload.pull_request.head.ref : ref.replace('refs/heads/', '');
-    const sha = event === 'pull_request' ? payload.pull_request.head.sha : (github_default()).context.sha;
+    const sha = event === 'pull_request' ? payload.pull_request.head.sha : github.context.sha;
 
     const referenceLink =
       event === 'pull_request'
