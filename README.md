@@ -7,7 +7,7 @@
 [![jest](https://jestjs.io/img/jest-badge.svg)](https://github.com/facebook/jest)
 
 
-## Getting Started/
+## Getting Started//
 
 #### Prerequisites
 - [Node.js >= 16.2.0](https://nodejs.org/en/download/releases/)
