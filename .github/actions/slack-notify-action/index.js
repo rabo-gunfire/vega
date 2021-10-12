@@ -8865,7 +8865,7 @@ const slackChat = async (payload) => {
 (async () => {
   try {
     const { payload, ref, workflow, eventName, runId } = github.github.context;
-    const { owner, repo } = github.context.repo;
+    const { owner, repo } = github.github.context.repo;
     const event = eventName;
     const branch = event === 'pull_request' ? payload.pull_request.head.ref : ref.replace('refs/heads/', '');
     const sha = event === 'pull_request' ? payload.pull_request.head.sha : github.github.context.sha;
