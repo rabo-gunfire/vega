@@ -8487,7 +8487,7 @@ var node_fetch_src_namespaceObject = {};
 __nccwpck_require__.r(node_fetch_src_namespaceObject);
 
 // EXTERNAL MODULE: ./node_modules/@actions/core/lib/core.js
-var lib_core = __nccwpck_require__(2186);
+var core = __nccwpck_require__(2186);
 // EXTERNAL MODULE: external "http"
 var external_http_ = __nccwpck_require__(8605);
 // EXTERNAL MODULE: external "https"
@@ -8849,7 +8849,7 @@ const slackChat = async (payload) => {
     headers: {
       "Content-Type": "application/json; charset=utf-8",
       "Content-Length": payload.length,
-      Authorization: `Bearer ${(0,lib_core.getInput)("slack-bot-token")}`,
+      Authorization: `Bearer ${(0,core.getInput)("slack-bot-token")}`,
       Accept: "application/json"
     }
   });
@@ -8863,6 +8863,7 @@ const slackChat = async (payload) => {
 (async () => {
   try {
     console.log('github property details', github);
+    console.log('github repo details', github.context.repo);
     const { payload, ref, workflow, eventName, runId } = github.context;
     const { owner, repo } = github.context.repo;
     const event = eventName;
@@ -8882,10 +8883,10 @@ const slackChat = async (payload) => {
           short: true,
         };
 
-    const jobStatus = (0,lib_core.getInput)("status");
+    const jobStatus = (0,core.getInput)("status");
     let status = jobStatus === "success" ? "SUCCESS" : jobStatus === "failure" ? "FAILURE" : "CANCELLED";
     let color = jobStatus === "success" ? "#2e993e" : jobStatus === "failure" ? "#bd0f26" : "#d29d0c";
-    const channel = core.getInput("channel").replace(/[#@]/g, '');
+    const channel = (0,core.getInput)("channel").replace(/[#@]/g, '');
 
     const postData = JSON.stringify({
       channel: channel,
@@ -8928,7 +8929,7 @@ const slackChat = async (payload) => {
     await slackChat(postData);
 
   } catch (error) {
-    (0,lib_core.setFailed)(error.message);
+    (0,core.setFailed)(error.message);
   }
 })();
 
