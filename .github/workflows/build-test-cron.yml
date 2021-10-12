@@ -4,8 +4,8 @@ name: build-and-test
 
 on:
   schedule:
-    # job runs at each seventh minute
-    - cron: '*/7 * * * *'
+    # job runs at each 10th minute
+    - cron: '*/10 * * * *'
 
 jobs:
   build-unittest:
