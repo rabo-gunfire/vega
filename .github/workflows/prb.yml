@@ -53,6 +53,6 @@ jobs:
           event: ${{ toJson(github.event) }}
           head_ref: ${{ github.head_ref }}
           base_ref: ${{ github.base_ref }}
-          job-status: ${{ job.status }}
           slack-bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
+          status: ${{ job.status }}
           channel: bot-saas-connector
