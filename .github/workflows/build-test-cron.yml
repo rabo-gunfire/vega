@@ -56,7 +56,7 @@ jobs:
       - name: Generate zip artifact
         run: npm run pack-zip:ncc
       - name: Slack channel notify
-        uses: ./.github/actions/slack-notify-action
+        uses: ./.github/actions/slack-send
         if: always()
         with:
           repo-token: ${{ secrets.REPO_TOKEN }}
