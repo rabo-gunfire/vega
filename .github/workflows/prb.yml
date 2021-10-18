@@ -45,12 +45,14 @@ jobs:
         run: npm run lint
       - name: Prettier check
         run: npm run prettier
-      # Checks the current version of the installed packages in
-      # the project against known vulnerabilities reported on
-      # the public npm registry.
-      - name: Run a security audit
-        run: npm run audit-check
-      - name: Unit tests
-        run: npm test
-      - name: Generate zip artifact
-        run: npm run pack-zip:ncc
+      - name: Slack channel notify
+        uses: ./.github/actions/slack-notify-action
+        if: always()
+        with:
+          repo-token: ${{ secrets.REPO_TOKEN }}
+          event: ${{ toJson(github.event) }}
+          head_ref: ${{ github.head_ref }}
+          base_ref: ${{ github.base_ref }}
+          slack-bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
+          status: ${{ job.status }}
+          channel: bot-saas-connector
