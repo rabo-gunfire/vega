@@ -1,17 +1,9 @@
 name: 'Notify Job Status to Slack'
 description: 'Notify a job status to a specific Slack channel.'
 inputs:
-  repo-token:
-    description: 'secret repo token'
-  event:
-    description: 'event info'
-  head_ref:
-    description: 'head ref branch'
-  base_ref:
-    description: 'base ref branch'
   slack-bot-token:
     description: 'Bot token used to send messages'
-  status:
+  job-status:
     description: 'job status'
   channel:
     description: 'Channel where messages to be sent'
