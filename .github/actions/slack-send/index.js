@@ -14620,14 +14620,14 @@ function fixResponseChunkedTransferBadEnding(request, errorCallback) {
  * @param {string} payload - chat content with fancy attachment
  */
 const slackChat = async (payload) => {
-  const res = await fetch("https://slack.com/api/chat.postMessage", {
-    method: "POST",
+  const res = await fetch('https://slack.com/api/chat.postMessage', {
+    method: 'POST',
     body: payload,
     headers: {
-      "Content-Type": "application/json; charset=utf-8",
-      "Content-Length": payload.length,
-      Authorization: `Bearer ${(0,core.getInput)("slack-bot-token")}`,
-      Accept: "application/json"
+      'Content-Type': 'application/json; charset=utf-8',
+      'Content-Length': payload.length,
+      Authorization: `Bearer ${(0,core.getInput)('slack-bot-token')}`,
+      Accept: 'application/json'
     }
   });
 
@@ -14660,11 +14660,19 @@ const slackChat = async (payload) => {
           short: true,
         };
 
-    const jobStatus = (0,core.getInput)("status");
-    let status = jobStatus === "success" ? "SUCCESS" : jobStatus === "failure" ? "FAILURE" : "CANCELLED";
-    let color = jobStatus === "success" ? "#35b147" : jobStatus === "failure" ? "#d41111" : "#d9a20d";
-    let author = event === 'pull_request'? `<https://github.com/${actor} | ${actor}>` : '';
-    const channel = (0,core.getInput)("channel").replace(/[#@]/g, '');
+    const jobStatus = (0,core.getInput)('status');
+    let status = jobStatus === 'success' ? 'SUCCESS' : jobStatus === 'failure' ? 'FAILURE' : 'CANCELLED';
+    let color = jobStatus === 'success' ? '#35b147' : jobStatus === 'failure' ? '#d41111' : '#d9a20d';
+    const channel = (0,core.getInput)('channel').replace(/[#@]/g, '');
+
+    const authorLink =
+      event === 'pull_request'
+        ? {
+          title: 'Author',
+          value: `<https://github.com/${actor} | ${actor}>`,
+          short: true,
+        }
+        : {};
 
     const postData = JSON.stringify({
       channel: channel,
@@ -14693,11 +14701,7 @@ const slackChat = async (payload) => {
               value: event,
               short: true,
             },
-            {
-              title: 'Author',
-              value: author,
-              short: true,
-            }
+            authorLink
           ],
           footer_icon: 'https://github.githubassets.com/favicon.ico',
           footer: `<https://github.com/${owner}/${repo} | ${owner}/${repo}>`,
