@@ -14607,7 +14607,7 @@ function fixResponseChunkedTransferBadEnding(request, errorCallback) {
 	});
 }
 
-;// CONCATENATED MODULE: ./index.js
+;// CONCATENATED MODULE: ./src/index.js
 /* Copyright (C) 2021 SailPoint Technologies, Inc.  All rights reserved. */
 
 
@@ -14619,103 +14619,102 @@ function fixResponseChunkedTransferBadEnding(request, errorCallback) {
  *
  * @param {string} payload - chat content with fancy attachment
  */
-const slackChat = async (payload) => {
-  const res = await fetch('https://slack.com/api/chat.postMessage', {
-    method: 'POST',
-    body: payload,
-    headers: {
-      'Content-Type': 'application/json; charset=utf-8',
-      'Content-Length': payload.length,
-      Authorization: `Bearer ${(0,core.getInput)('slack-bot-token')}`,
-      Accept: 'application/json'
-    }
-  });
+const slackChat = async payload => {
+    const res = await fetch('https://slack.com/api/chat.postMessage', {
+        method: 'POST',
+        body: payload,
+        headers: {
+            'Content-Type': 'application/json; charset=utf-8',
+            'Content-Length': payload.length,
+            Authorization: `Bearer ${(0,core.getInput)('slack-bot-token')}`,
+            Accept: 'application/json'
+        }
+    });
 
-  if (!res.ok) {
-    throw new Error(`Server error - ${res.status}`);
-  }
+    if (!res.ok) {
+        throw new Error(`Server error - ${res.status}`);
+    }
 };
 
 /**
  * entry point for the plugin
  */
 (async () => {
-  try {
-    const { payload, ref, workflow, eventName, runId, actor } = github.context;
-    const { owner, repo } = github.context.repo;
-    const event = eventName;
-    const branch = event === 'pull_request' ? payload.pull_request.head.ref : ref.replace('refs/heads/', '');
-    const sha = event === 'pull_request' ? payload.pull_request.head.sha : github.context.sha;
+    try {
+        const { payload, ref, workflow, eventName, runId, actor } = github.context;
+        const { owner, repo } = github.context.repo;
+        const event = eventName;
+        const branch = event === 'pull_request' ? payload.pull_request.head.ref : ref.replace('refs/heads/', '');
+        const sha = event === 'pull_request' ? payload.pull_request.head.sha : github.context.sha;
 
-    const referenceLink =
-      event === 'pull_request'
-        ? {
-          title: 'Pull Request',
-          value: `<${payload.pull_request.html_url} | ${payload.pull_request.title}>`,
-          short: true,
-        }
-        : {
-          title: 'Branch',
-          value: `<https://github.com/${owner}/${repo}/commit/${sha} | ${branch}>`,
-          short: true,
-        };
+        const referenceLink =
+            event === 'pull_request'
+                ? {
+                      title: 'Pull Request',
+                      value: `<${payload.pull_request.html_url} | ${payload.pull_request.title}>`,
+                      short: true
+                  }
+                : {
+                      title: 'Branch',
+                      value: `<https://github.com/${owner}/${repo}/commit/${sha} | ${branch}>`,
+                      short: true
+                  };
 
-    const jobStatus = (0,core.getInput)('status');
-    let status = jobStatus === 'success' ? 'SUCCESS' : jobStatus === 'failure' ? 'FAILURE' : 'CANCELLED';
-    let color = jobStatus === 'success' ? '#35b147' : jobStatus === 'failure' ? '#d41111' : '#d9a20d';
-    const channel = (0,core.getInput)('channel').replace(/[#@]/g, '');
+        const jobStatus = (0,core.getInput)('status');
+        const status = jobStatus === 'success' ? 'SUCCESS' : jobStatus === 'failure' ? 'FAILURE' : 'CANCELLED';
+        const color = jobStatus === 'success' ? '#35b147' : jobStatus === 'failure' ? '#d41111' : '#d9a20d';
+        const channel = (0,core.getInput)('channel').replace(/[#@]/g, '');
 
-    const authorLink =
-      event === 'pull_request'
-        ? {
-          title: 'Author',
-          value: `<https://github.com/${actor} | ${actor}>`,
-          short: true,
-        }
-        : {};
+        const authorLink =
+            event === 'pull_request'
+                ? {
+                      title: 'Author',
+                      value: `<https://github.com/${actor} | ${actor}>`,
+                      short: true
+                  }
+                : {};
 
-    const postData = JSON.stringify({
-      channel: channel,
-      attachments: [
-        {
-          color,
-          fields: [
-            {
-              title: 'Repo',
-              value: `<https://github.com/${owner}/${repo} | ${owner}/${repo}>`,
-              short: true,
-            },
-            {
-              title: 'Workflow',
-              value: `<https://github.com/${owner}/${repo}/actions/runs/${runId} | ${workflow}>`,
-              short: true,
-            },
-            {
-              title: 'Status',
-              value: status,
-              short: true,
-            },
-            referenceLink,
-            {
-              title: 'Event',
-              value: event,
-              short: true,
-            },
-            authorLink
-          ],
-          footer_icon: 'https://github.githubassets.com/favicon.ico',
-          footer: `<https://github.com/${owner}/${repo} | ${owner}/${repo}>`,
-          ts: Math.floor(Date.now() / 1000),
-        }
-      ]
-    });
+        const postData = JSON.stringify({
+            channel: channel,
+            attachments: [
+                {
+                    color,
+                    fields: [
+                        {
+                            title: 'Repo',
+                            value: `<https://github.com/${owner}/${repo} | ${owner}/${repo}>`,
+                            short: true
+                        },
+                        {
+                            title: 'Workflow',
+                            value: `<https://github.com/${owner}/${repo}/actions/runs/${runId} | ${workflow}>`,
+                            short: true
+                        },
+                        {
+                            title: 'Status',
+                            value: status,
+                            short: true
+                        },
+                        referenceLink,
+                        {
+                            title: 'Event',
+                            value: event,
+                            short: true
+                        },
+                        authorLink
+                    ],
+                    footer_icon: 'https://github.githubassets.com/favicon.ico',
+                    footer: `<https://github.com/${owner}/${repo} | ${owner}/${repo}>`,
+                    ts: Math.floor(Date.now() / 1000)
+                }
+            ]
+        });
 
-    // post data to a slack channel
-    await slackChat(postData);
-
-  } catch (error) {
-    (0,core.setFailed)(error.message);
-  }
+        // post data to a slack channel
+        await slackChat(postData);
+    } catch (error) {
+        (0,core.setFailed)(error.message);
+    }
 })();
 
 })();
